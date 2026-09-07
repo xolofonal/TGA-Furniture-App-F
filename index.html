@@ -74,7 +74,6 @@
                 Settings
             </button>
             <button onclick="switchTab('notifications')" class="relative p-2 bg-[#4a2e1e] rounded-full border border-[#67412c]">
-                <!-- Brown Alert Icon -->
                 <svg class="w-5 h-5 stroke-[#d1b49e]" fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
                 <span id="notif-badge" class="absolute -top-1 -right-1 bg-[#8c5a3c] text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">0</span>
             </button>
@@ -95,10 +94,11 @@
                 <button id="add-item-btn" onclick="openAddItemModal()" class="bg-[#67412c] hover:bg-[#4a2e1e] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm">+ Add Item</button>
             </div>
 
-            <!-- Category Tabs Filter -->
-            <div class="flex space-x-2 mb-3 bg-[#f4ede4] p-1 rounded-xl border border-[#e2d7cd]">
-                <button onclick="filterGalleryCategory('furniture')" id="cat-tab-furniture" class="w-1/2 py-1.5 rounded-lg text-xs font-bold transition bg-[#67412c] text-white">Furniture</button>
-                <button onclick="filterGalleryCategory('mattress')" id="cat-tab-mattress" class="w-1/2 py-1.5 rounded-lg text-xs font-bold transition text-[#67412c]">Mattresses</button>
+            <!-- Category Tabs Filter (Furniture, Arpico, Helix) -->
+            <div class="flex space-x-1 mb-3 bg-[#f4ede4] p-1 rounded-xl border border-[#e2d7cd]">
+                <button onclick="filterGalleryCategory('furniture')" id="cat-tab-furniture" class="w-1/3 py-1.5 rounded-lg text-xs font-bold transition bg-[#67412c] text-white">Furniture</button>
+                <button onclick="filterGalleryCategory('arpico')" id="cat-tab-arpico" class="w-1/3 py-1.5 rounded-lg text-xs font-bold transition text-[#67412c]">Arpico</button>
+                <button onclick="filterGalleryCategory('helix')" id="cat-tab-helix" class="w-1/3 py-1.5 rounded-lg text-xs font-bold transition text-[#67412c]">Helix</button>
             </div>
 
             <div id="gallery-grid" class="grid grid-cols-2 gap-3"></div>
@@ -108,21 +108,49 @@
         <section id="sec-reports" class="hidden space-y-3">
             <div class="flex flex-col space-y-2">
                 <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-[#2c221e] text-sm">Sales & Monthly Reports</h2>
+                    <h2 class="font-bold text-[#2c221e] text-sm">Sales Reports</h2>
                     <div id="admin-report-selector" class="hidden space-x-1">
                         <button onclick="fetchReports('galenbindunuwewa')" class="px-2.5 py-1 text-[10px] bg-[#67412c] text-white rounded-md font-medium">GB</button>
                         <button onclick="fetchReports('mihinthale')" class="px-2.5 py-1 text-[10px] bg-[#67412c] text-white rounded-md font-medium">MH</button>
                         <button onclick="fetchReports('all')" class="px-2.5 py-1 text-[10px] bg-[#2c221e] text-white rounded-md font-medium">All</button>
                     </div>
                 </div>
-                <button onclick="downloadReportPDF()" class="w-full bg-[#67412c] hover:bg-[#4a2e1e] text-white py-2 rounded-xl text-xs font-bold shadow-sm flex items-center justify-center space-x-2">
+                <!-- Admin ට පමණක් පෙනෙන Download PDF Button එක -->
+                <button id="btn-download-pdf" onclick="downloadReportPDF()" class="w-full bg-[#67412c] hover:bg-[#4a2e1e] text-white py-2 rounded-xl text-xs font-bold shadow-sm flex items-center justify-center space-x-2">
                     📄 Download Monthly Report (PDF)
                 </button>
             </div>
 
-            <div id="admin-cleanup-container" class="hidden bg-[#fbebe8] border border-[#f0b1a8] p-3 rounded-xl">
-                <button onclick="runCleanup()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-2 rounded-lg text-xs font-bold">⚠️ RUN SYSTEM CLEANUP</button>
-            </div>
+<!-- Sales Reports Section එක තුළ -->
+<div id="admin-cleanup-container" class="hidden bg-[#fbebe8] border border-[#f0b1a8] p-3 rounded-xl">
+    <button onclick="openCleanupModal()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-2 rounded-lg text-xs font-bold">
+        ⚠️ SYSTEM CLEANUP OPTIONS
+    </button>
+</div>
+
+<!-- Cleanup Options Modal (index.html හි අගට එකතු කරන්න) -->
+<div id="modal-cleanup-options" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd]">
+        <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e]">System Cleanup Options</h3>
+        <p class="text-xs text-slate-500 mb-2">කරුණාකර ඉවත් කිරීමට අවශ්‍ය Cleanup Type එක තෝරන්න:</p>
+        
+        <div class="space-y-2">
+            <button onclick="executeCleanup('full')" class="w-full bg-rose-700 hover:bg-rose-800 text-white py-2.5 rounded-xl font-bold text-xs">
+                🚨 Full System Cleanup (All Data)
+            </button>
+            <button onclick="executeCleanup('reports')" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-bold text-xs">
+                📄 Reports Only Cleanup
+            </button>
+            <button onclick="executeCleanup('gallery')" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2.5 rounded-xl font-bold text-xs">
+                🖼️ Gallery Items Only Cleanup
+            </button>
+        </div>
+
+        <button onclick="closeModal('modal-cleanup-options')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs mt-2">
+            Cancel
+        </button>
+    </div>
+</div>
             <div id="report-preview-list" class="space-y-3"></div>
         </section>
 
@@ -136,7 +164,7 @@
         </section>
     </main>
 
-    <!-- Bottom Nav (Brown Icons) -->
+    <!-- Bottom Nav -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e2d7cd] flex justify-around py-2.5 z-40 text-[11px] font-bold shadow-lg">
         <button onclick="switchTab('gallery')" id="nav-gallery" class="text-[#67412c] flex flex-col items-center gap-1">
             <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
@@ -163,7 +191,8 @@
                 <label class="text-[10px] font-bold text-[#67412c]">Category</label>
                 <select id="add-category" class="form-input">
                     <option value="furniture">Furniture</option>
-                    <option value="mattress">Mattress</option>
+                    <option value="arpico">Arpico</option>
+                    <option value="helix">Helix</option>
                 </select>
             </div>
 
@@ -193,43 +222,50 @@
         </div>
     </div>
 
-    <!-- Sell Modal -->
-    <div id="modal-sell" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 max-h-[90vh] overflow-y-auto border border-[#e2d7cd]">
-            <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e]">Sell Item</h3>
-            <input type="text" id="sell-cust-name" placeholder="Customer Name" class="form-input">
-            <input type="text" id="sell-cust-area" placeholder="Area / Address" class="form-input">
-            <input type="tel" id="sell-cust-tel" placeholder="Telephone Number" class="form-input">
-            <input type="number" id="sell-qty" value="1" placeholder="Quantity" class="form-input">
-            <input type="date" id="sell-date" class="form-input">
-            
-            <label class="text-xs font-bold text-[#67412c] block">Payment Type</label>
-            <select id="sell-payment-type" onchange="toggleInstallmentOptions()" class="form-input">
-                <option value="cash">Cash Payment</option>
-                <option value="installment">Monthly Installments</option>
+<!-- Sell Modal (index.html) -->
+<div id="modal-sell" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 max-h-[90vh] overflow-y-auto border border-[#e2d7cd]">
+        <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e]">Sell Item</h3>
+        
+        <!-- Selling Price එක පෙන්වන කොටස -->
+        <div class="space-y-1">
+            <label class="text-[10px] font-bold text-[#67412c]">Selling Price per Unit (Rs.)</label>
+            <input type="number" id="sell-selling-price" readonly class="form-input bg-slate-100 font-bold text-[#67412c]">
+        </div>
+
+        <input type="text" id="sell-cust-name" placeholder="Customer Name" class="form-input">
+        <input type="text" id="sell-cust-area" placeholder="Area / Address" class="form-input">
+        <input type="tel" id="sell-cust-tel" placeholder="Telephone Number" class="form-input">
+        <input type="number" id="sell-qty" value="1" min="1" oninput="calculateProfit()" placeholder="Quantity" class="form-input">
+        <input type="date" id="sell-date" class="form-input">
+        
+        <label class="text-xs font-bold text-[#67412c] block">Payment Type</label>
+        <select id="sell-payment-type" onchange="toggleInstallmentOptions()" class="form-input">
+            <option value="cash">Cash Payment</option>
+            <option value="installment">Monthly Installments</option>
+        </select>
+
+        <div id="installment-months-box" class="hidden space-y-2">
+            <label class="text-xs font-bold text-[#67412c] block">Select Installment Months</label>
+            <select id="sell-months-select" onchange="handleMonthsSelectChange()" class="form-input">
+                <option value="3">3 Months</option>
+                <option value="6">6 Months</option>
+                <option value="custom">Custom (1-12 Months)</option>
             </select>
+            <input type="number" id="sell-custom-months" min="1" max="12" placeholder="Enter Months (1 - 12)" class="form-input hidden">
+        </div>
 
-            <div id="installment-months-box" class="hidden space-y-2">
-                <label class="text-xs font-bold text-[#67412c] block">Select Installment Months</label>
-                <select id="sell-months-select" onchange="handleMonthsSelectChange()" class="form-input">
-                    <option value="3">3 Months</option>
-                    <option value="6">6 Months</option>
-                    <option value="custom">Custom (1-12 Months)</option>
-                </select>
-                <input type="number" id="sell-custom-months" min="1" max="12" placeholder="Enter Months (1 - 12)" class="form-input hidden">
-            </div>
+        <div class="space-y-1">
+            <label class="text-[10px] font-bold text-[#67412c]">Profit for this sale (Rs.)</label>
+            <input type="number" id="sell-profit" placeholder="Calculated Profit" class="form-input">
+        </div>
 
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-[#67412c]">Profit for this sale (Rs.)</label>
-                <input type="number" id="sell-profit" placeholder="Calculated Profit" class="form-input">
-            </div>
-
-            <div class="flex space-x-2 pt-2">
-                <button onclick="submitSell()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Confirm Sale</button>
-                <button onclick="closeModal('modal-sell')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs">Cancel</button>
-            </div>
+        <div class="flex space-x-2 pt-2">
+            <button onclick="submitSell()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Confirm Sale</button>
+            <button onclick="closeModal('modal-sell')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs">Cancel</button>
         </div>
     </div>
+</div>
 
     <!-- Item Options Modal -->
     <div id="modal-item-options" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-end justify-center">
@@ -255,7 +291,8 @@
                 <label class="text-[10px] font-bold text-[#67412c]">Category</label>
                 <select id="edit-category" class="form-input">
                     <option value="furniture">Furniture</option>
-                    <option value="mattress">Mattress</option>
+                    <option value="arpico">Arpico</option>
+                    <option value="helix">Helix</option>
                 </select>
             </div>
 

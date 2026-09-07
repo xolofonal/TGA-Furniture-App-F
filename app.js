@@ -18,13 +18,14 @@ window.onload = () => {
 };
 
 // ==========================================
-// Category Switch Logic
+// Category Switch Logic (Furniture, Arpico, Helix)
 // ==========================================
 function filterGalleryCategory(category) {
     activeCategory = category;
     
-    document.getElementById('cat-tab-furniture').className = category === 'furniture' ? 'w-1/2 py-1.5 rounded-lg text-xs font-bold transition bg-[#67412c] text-white' : 'w-1/2 py-1.5 rounded-lg text-xs font-bold transition text-[#67412c]';
-    document.getElementById('cat-tab-mattress').className = category === 'mattress' ? 'w-1/2 py-1.5 rounded-lg text-xs font-bold transition bg-[#67412c] text-white' : 'w-1/2 py-1.5 rounded-lg text-xs font-bold transition text-[#67412c]';
+    document.getElementById('cat-tab-furniture').className = category === 'furniture' ? 'w-1/3 py-1.5 rounded-lg text-xs font-bold transition bg-[#67412c] text-white' : 'w-1/3 py-1.5 rounded-lg text-xs font-bold transition text-[#67412c]';
+    document.getElementById('cat-tab-arpico').className = category === 'arpico' ? 'w-1/3 py-1.5 rounded-lg text-xs font-bold transition bg-[#67412c] text-white' : 'w-1/3 py-1.5 rounded-lg text-xs font-bold transition text-[#67412c]';
+    document.getElementById('cat-tab-helix').className = category === 'helix' ? 'w-1/3 py-1.5 rounded-lg text-xs font-bold transition bg-[#67412c] text-white' : 'w-1/3 py-1.5 rounded-lg text-xs font-bold transition text-[#67412c]';
     
     renderGallery();
 }
@@ -33,11 +34,10 @@ function renderGallery() {
     const grid = document.getElementById('gallery-grid');
     if (!window.galleryItemsCache) return;
 
-    // Category අනුව filter කිරීම (පරණ data තිබේ නම් default එක furniture වේ)
     const filteredItems = window.galleryItemsCache.filter(item => (item.category || 'furniture') === activeCategory);
 
     if (filteredItems.length === 0) {
-        grid.innerHTML = `<p class="col-span-2 text-center text-xs text-slate-400 py-6">No items found in ${activeCategory}.</p>`;
+        grid.innerHTML = `<p class="text-xs text-slate-400 col-span-2 text-center py-4">මෙම Category එකෙහි Items කිසිවක් නැත.</p>`;
         return;
     }
 
@@ -47,7 +47,7 @@ function renderGallery() {
             <div class="mt-2 space-y-1">
                 <h4 class="font-bold text-xs text-slate-800 truncate">${item.name}</h4>
                 <p class="text-[10px] text-slate-400">Size: ${item.size}</p>
-                <p class="text-xs font-bold text-indigo-600">Rs. ${item.sellingPrice}</p>
+                <p class="text-xs font-bold text-indigo-600">Rs. ${item.sellingPrice || 0}</p>
                 <span class="inline-block text-[9px] ${item.quantity <= 2 ? 'bg-rose-100 text-rose-600 font-bold' : 'bg-slate-100 text-slate-600'} px-2 py-0.5 rounded-md font-bold">
                     Qty: ${item.quantity} ${item.quantity <= 2 ? '⚠️ Low' : ''}
                 </span>
@@ -57,7 +57,7 @@ function renderGallery() {
 }
 
 // ==========================================
-// 1. Profit Calculation Logic
+// Profit Calculation Logic
 // ==========================================
 function calculateProfit() {
     if (!selectedItem) return;
@@ -69,7 +69,6 @@ function calculateProfit() {
     const materialCost = selectedItem.materialCost || 0;
     const sellingPrice = selectedItem.sellingPrice || 0;
 
-    // (විකුණුම් මිල - නිෂ්පාදන පිරිවැය) * ප්‍රමාණය
     const unitProfit = sellingPrice - materialCost;
     const totalProfit = unitProfit * qty;
 
@@ -88,9 +87,7 @@ function convertFileToBase64(file) {
     });
 }
 
-// ==========================================
-// 2. Push Notifications Logic
-// ==========================================
+// Push Notifications
 async function requestNotificationPermission() {
     if ('serviceWorker' in navigator && 'Notification' in window) {
         try {
@@ -121,7 +118,6 @@ function showPushNotification(title, body) {
 
 function checkInstallmentAlerts(sales) {
     if (!sales || sales.length === 0) return;
-
     const today = new Date().toISOString().split('T')[0];
 
     sales.forEach(sale => {
@@ -146,9 +142,7 @@ function checkLowStockNotifications(items) {
     const badge = document.getElementById('notif-badge');
     const notifList = document.getElementById('notification-list');
 
-    if (badge) {
-        badge.innerText = lowStockItems.length;
-    }
+    if (badge) badge.innerText = lowStockItems.length;
 
     if (notifList) {
         if (lowStockItems.length === 0) {
@@ -167,23 +161,14 @@ function checkLowStockNotifications(items) {
             `).join('');
         }
     }
-
-    lowStockItems.forEach(item => {
-        showPushNotification(
-            "⚠️ Low Stock Alert!", 
-            `${item.name} හි තොග ප්‍රමාණය ${item.quantity} දක්වා අඩුවී ඇත.`
-        );
-    });
 }
 
-// Keypad & PIN Logic
+// PIN & Auth Logic
 function pressKey(num) {
     if (enteredPin.length < 6) {
         enteredPin += num;
         updatePinDots();
-        if (enteredPin.length === 6) {
-            handlePinSubmit();
-        }
+        if (enteredPin.length === 6) handlePinSubmit();
     }
 }
 
@@ -272,15 +257,18 @@ function initAppUI() {
         document.getElementById('admin-cleanup-container').classList.remove('hidden');
         document.getElementById('admin-report-selector').classList.remove('hidden');
         document.getElementById('admin-settings-btn')?.classList.remove('hidden');
+        document.getElementById('btn-download-pdf')?.classList.remove('hidden');
         activeBranchView = 'galenbindunuwewa';
     } else {
         activeBranchView = activeUser.branch;
         document.getElementById('add-item-btn').classList.add('hidden');
         document.getElementById('btn-opt-edit').classList.add('hidden');
         document.getElementById('btn-opt-delete').classList.add('hidden');
+        document.getElementById('btn-download-pdf')?.classList.add('hidden');
     }
 
     loadGallery();
+    fetchReports(); // <-- මෙතැනට එකතු කරන්න (App එක open කරද්දීම පැරණි Reports load වේ)
     requestNotificationPermission();
 }
 
@@ -347,7 +335,7 @@ async function submitAddItem() {
             closeModal('modal-add-item');
             loadGallery();
         } else {
-            alert('Can not add to the Gallary.');
+            alert('Can not add to the Gallery.');
         }
     } catch (err) {
         alert('Can not connect to the server..');
@@ -358,6 +346,18 @@ function openItemOptions(itemId) {
     selectedItem = window.galleryItemsCache.find(i => i._id === itemId);
     document.getElementById('pop-item-name').innerText = selectedItem.name;
     document.getElementById('pop-item-qty').innerText = selectedItem.quantity;
+    
+    const sellBtn = document.querySelector('#modal-item-options button[onclick="openSellModal()"]');
+    if (selectedItem.quantity <= 0) {
+        sellBtn.disabled = true;
+        sellBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        sellBtn.innerText = 'Out of Stock (Qty: 0)';
+    } else {
+        sellBtn.disabled = false;
+        sellBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        sellBtn.innerText = 'Sell This Item';
+    }
+
     document.getElementById('modal-item-options').classList.remove('hidden');
 }
 
@@ -432,12 +432,40 @@ function handleMonthsSelectChange() {
 }
 
 function openSellModal() {
+    if (!selectedItem || selectedItem.quantity <= 0) {
+        alert('මෙම භාණ්ඩය තොගයේ නොමැත (Out of Stock)!');
+        return;
+    }
     closeModal('modal-item-options');
+    
+    // Selling Price එක Field එකට Set කිරීම
+    const sellPriceInput = document.getElementById('sell-selling-price');
+    if (sellPriceInput) {
+        sellPriceInput.value = selectedItem.sellingPrice || 0;
+    }
+
     document.getElementById('modal-sell').classList.remove('hidden');
     calculateProfit();
 }
 
 async function submitSell() {
+    const qtyInput = parseInt(document.getElementById('sell-qty').value) || 0;
+
+    if (!selectedItem || selectedItem.quantity <= 0) {
+        alert('මෙම භාණ්ඩය තොගයේ නොමැත!');
+        return;
+    }
+
+    if (qtyInput <= 0) {
+        alert('කරුණාකර නිවැරදි Quantity එකක් ඇතුළත් කරන්න.');
+        return;
+    }
+
+    if (qtyInput > selectedItem.quantity) {
+        alert(`තොගයේ ඇත්තේ භාණ්ඩ ${selectedItem.quantity} ක් පමණි. කරුණාකර ප්‍රමාණය පරීක්ෂා කරන්න.`);
+        return;
+    }
+
     let monthsVal = document.getElementById('sell-months-select').value;
     if (monthsVal === 'custom') {
         monthsVal = document.getElementById('sell-custom-months').value;
@@ -452,11 +480,12 @@ async function submitSell() {
         customerName: document.getElementById('sell-cust-name').value,
         customerArea: document.getElementById('sell-cust-area').value,
         customerTel: document.getElementById('sell-cust-tel').value,
-        quantity: parseInt(document.getElementById('sell-qty').value),
+        quantity: qtyInput,
         saleDate: document.getElementById('sell-date').value || new Date().toISOString().split('T')[0],
         paymentType: document.getElementById('sell-payment-type').value,
         months: monthsVal,
-        profit: parseFloat(document.getElementById('sell-profit').value) || (selectedItem.sellingPrice - (selectedItem.materialCost || 0)),
+        sellingPrice: selectedItem.sellingPrice,
+        profit: parseFloat(document.getElementById('sell-profit').value) || ((selectedItem.sellingPrice - (selectedItem.materialCost || 0)) * qtyInput),
         branch: activeBranchView
     };
 
@@ -473,10 +502,12 @@ async function submitSell() {
         fetchReports();
         switchTab('reports');
     } else {
-        alert('ගනුදෙනුව අසාර්ථක විය.');
+        const errorData = await res.json();
+        alert(errorData.error || 'ගනුදෙනුව අසාර්ථක විය.');
     }
 }
 
+// Fetch Reports (Profit පෙන්වන්නේ Admin ට පමණි)
 async function fetchReports(branch = activeBranchView) {
     try {
         const res = await fetch(`${API_BASE_URL}/api/reports/${branch}`);
@@ -492,7 +523,11 @@ async function fetchReports(branch = activeBranchView) {
             return;
         }
 
-        container.innerHTML = sales.map(s => `
+        const isAdmin = activeUser && activeUser.role === 'admin';
+
+        container.innerHTML = sales.map(s => {
+            const totalAmount = s.totalAmount || ((s.sellingPrice || 0) * (s.quantity || 1));
+            return `
             <div class="bg-white p-4 rounded-xl border border-[#e2d7cd] shadow-sm text-xs space-y-2">
                 <div class="flex justify-between font-bold border-b border-[#e2d7cd] pb-1.5 text-xs text-[#2c221e]">
                     <span>${s.customerName} (${s.customerArea || 'N/A'})</span>
@@ -501,8 +536,8 @@ async function fetchReports(branch = activeBranchView) {
                 <p class="text-slate-700">Item: <b>${s.itemName || 'Furniture Item'}</b> | Qty: ${s.quantity} | Tel: ${s.customerTel}</p>
                 
                 <div class="flex justify-between bg-[#f4ede4] p-2 rounded-lg text-[11px] font-bold text-[#67412c]">
-                    <span>Selling Price: Rs. ${(s.sellingPrice || 0) * (s.quantity || 1)}</span>
-                    <span>Profit: Rs. ${s.profit || 0}</span>
+                    <span>Total Amount: Rs. ${totalAmount}</span>
+                    ${isAdmin ? `<span>Profit: Rs. ${s.profit || 0}</span>` : ''}
                 </div>
 
                 ${s.paymentType === 'installment' && s.installments ? `
@@ -517,14 +552,59 @@ async function fetchReports(branch = activeBranchView) {
                         `).join('')}
                     </div>
                 ` : `<p class="text-emerald-600 font-bold text-[11px]">Status: ✓ Fully Paid</p>`}
+
+                <!-- Return / Delete Report Option (Only Admin) -->
+                ${isAdmin ? `
+                    <div class="pt-1 flex justify-end">
+                        <button onclick="returnAndDeleteReport('${s._id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold px-2.5 py-1 rounded-lg text-[10px] flex items-center space-x-1">
+                            <span>🗑️ Return Item (Delete Sale)</span>
+                        </button>
+                    </div>
+                ` : ''}
             </div>
-        `).join('');
+            `;
+        }).join('');
     } catch (err) {
         console.error('Failed to fetch reports:', err);
     }
 }
 
+// Return වූ විට Report එක Delete කිරීමේ ශ්‍රිතය (Admin Only)
+async function returnAndDeleteReport(saleId) {
+    if (!activeUser || activeUser.role !== 'admin') {
+        alert('මෙම ක්‍රියාව සිදු කිරීමට Admin ලෙස ලොග් විය යුතුය.');
+        return;
+    }
+
+    if (confirm('මෙම භාණ්ඩය Return එකක් ලෙස සලකා Report එකෙන් ඉවත් කිරීමට ඔබට විශ්වාසද? (මෙහිදී අදාළ Item එකෙහි Quantity එක නැවත එකතු වේ)')) {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/sales/${saleId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'user-role': activeUser.role
+                }
+            });
+
+            if (res.ok) {
+                alert('භාණ්ඩය Return එකක් ලෙස සලකා වාර්තාවෙන් ඉවත් කරන ලදී!');
+                fetchReports();
+                loadGallery();
+            } else {
+                alert('Report එක ඉවත් කිරීම අසාර්ථක විය.');
+            }
+        } catch (err) {
+            alert('Server සම්බන්ධතාවයේ දෝෂයකි.');
+        }
+    }
+}
+
 function downloadReportPDF() {
+    if (!activeUser || activeUser.role !== 'admin') {
+        alert('Month-end PDF වාර්තා ලබා ගත හැක්කේ Admin හට පමණි.');
+        return;
+    }
+
     if (!currentReportsCache || currentReportsCache.length === 0) {
         alert('No Data to Download.');
         return;
@@ -542,16 +622,22 @@ function downloadReportPDF() {
     doc.text(`Branch: ${activeBranchView.toUpperCase()} | Generated Date: ${new Date().toLocaleDateString()}`, 14, 22);
 
     const tableRows = [];
+    let grandTotalAmount = 0;
+    let grandTotalProfit = 0;
+
     currentReportsCache.forEach((s, index) => {
-        const sellingPrice = (s.sellingPrice || 0) * (s.quantity || 1);
+        const totalAmount = s.totalAmount || ((s.sellingPrice || 0) * (s.quantity || 1));
         const profit = s.profit || 0;
+
+        grandTotalAmount += totalAmount;
+        grandTotalProfit += profit;
 
         const rowData = [
             index + 1,
             s.customerName || 'N/A',
             s.itemName || 'Item',
             s.quantity || 1,
-            `Rs. ${sellingPrice}`,
+            `Rs. ${totalAmount}`,
             `Rs. ${profit}`,
             s.paymentType ? s.paymentType.toUpperCase() : 'CASH',
             s.saleDate ? new Date(s.saleDate).toLocaleDateString() : 'N/A'
@@ -559,9 +645,10 @@ function downloadReportPDF() {
         tableRows.push(rowData);
     });
 
+    // වගුව සෑදීම
     doc.autoTable({
         startY: 28,
-        head: [['#', 'Customer Name', 'Item', 'Qty', 'Selling Price', 'Profit', 'Payment', 'Date']],
+        head: [['#', 'Customer Name', 'Item', 'Qty', 'Total Amount', 'Profit', 'Payment', 'Date']],
         body: tableRows,
         theme: 'striped',
         headStyles: { 
@@ -573,6 +660,17 @@ function downloadReportPDF() {
             fillColor: [244, 237, 228]
         }
     });
+
+    // වගුව අවසන් වන Y පිහිටුම ලබා ගැනීම
+    const finalY = doc.lastAutoTable.finalY || 30;
+
+    // Total Amount සහ Total Profit සටහන් කිරීම
+    doc.setFontSize(11);
+    doc.setTextColor(44, 34, 30);
+    doc.setFont(undefined, 'bold');
+    
+    doc.text(`Total Sales Amount : Rs. ${grandTotalAmount}`, 14, finalY + 10);
+    doc.text(`Total Profit       : Rs. ${grandTotalProfit}`, 14, finalY + 17);
 
     doc.save(`TGA_Sales_Report_${activeBranchView}_${new Date().toISOString().split('T')[0]}.pdf`);
 }
@@ -597,15 +695,23 @@ async function confirmInstallmentPayment() {
     }
 }
 
-async function runCleanup() {
+function openCleanupModal() {
     if (!activeUser || activeUser.role !== 'admin') {
         alert('මෙම ක්‍රියාව සිදු කිරීමට Admin ලෙස ලොග් විය යුතුය.');
         return;
     }
+    document.getElementById('modal-cleanup-options').classList.remove('hidden');
+}
 
-    if (confirm('පද්ධතියේ සියලුම දත්ත (Sales & Items) ඉවත් කිරීමට ඔබට විශ්වාසද?')) {
+async function executeCleanup(type) {
+    let confirmMsg = "";
+    if (type === 'full') confirmMsg = 'පද්ධතියේ සියලුම දත්ත (Sales & Gallery Items) ඉවත් කිරීමට ඔබට විශ්වාසද?';
+    if (type === 'reports') confirmMsg = 'සියලුම Sales Reports ඉවත් කිරීමට ඔබට විශ්වාසද?';
+    if (type === 'gallery') confirmMsg = 'සියලුම Gallery Items ඉවත් කිරීමට ඔබට විශ්වාසද?';
+
+    if (confirm(confirmMsg)) {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/cleanup`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/cleanup?type=${type}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -616,7 +722,8 @@ async function runCleanup() {
             const data = await res.json();
 
             if (res.ok) {
-                alert(data.message || 'System Cleanup සාර්ථකව නිම විය!');
+                alert(data.message || 'Cleanup ක්‍රියාවලිය සාර්ථකයි!');
+                closeModal('modal-cleanup-options');
                 fetchReports();
                 loadGallery();
             } else {
@@ -624,7 +731,7 @@ async function runCleanup() {
             }
         } catch (err) {
             console.error('Cleanup Fetch Error:', err);
-            alert('Server සම්බන්ධතාවයේ දෝෂයකි. (Port 3000 active දැයි බලන්න)');
+            alert('Server සම්බන්ධතාවයේ දෝෂයකි.');
         }
     }
 }
@@ -667,23 +774,38 @@ async function submitCredentialChange() {
     }
 }
 
+// app_11.js හි line 332-340 අතර ඇති switchTab ශ්‍රිතය පහත පරිදි සකසන්න:
+
 function switchTab(tab) {
     document.getElementById('sec-gallery').className = tab === 'gallery' ? 'block' : 'hidden';
     document.getElementById('sec-reports').className = tab === 'reports' ? 'block' : 'hidden';
     document.getElementById('sec-notifications').className = tab === 'notifications' ? 'block' : 'hidden';
 
     document.getElementById('nav-gallery').className = tab === 'gallery' ? 'text-indigo-600 flex flex-col items-center' : 'text-slate-400 flex flex-col items-center';
-    document.getElementById('nav-reports').className = tab === 'reports' ? 'text-indigo-600 flex flex-col items-center' : 'text-slate-400 flex flex-col items-center';
+    document.getElementById('nav-reports').className = tab === 'reports' ? 'text-indigo-600 flex flex-col items-center' : 'text-slate-400 flex flex-col items-center'; // <-- 'nav-[#a89282]' වෙනුවට 'nav-reports' යොදන්න
     document.getElementById('nav-notifs').className = tab === 'notifications' ? 'text-indigo-600 flex flex-col items-center' : 'text-slate-400 flex flex-col items-center';
 
     if (tab === 'reports') fetchReports();
 }
 
 async function deleteSelectedItem() {
+    if (!selectedItem) return;
     if (confirm('මෙම item එක ඉවත් කරන්නද?')) {
-        await fetch(`${API_BASE_URL}/api/items/${selectedItem._id}`, { method: 'DELETE' });
-        closeModal('modal-item-options');
-        loadGallery();
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/items/${selectedItem._id}`, { 
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (res.ok) {
+                alert('Item එක සාර්ථකව ඉවත් කරන ලදී!');
+                closeModal('modal-item-options');
+                loadGallery();
+            } else {
+                alert('Item එක Delete කිරීමට නොහැකි විය.');
+            }
+        } catch (err) {
+            alert('Server සම්බන්ධතාවයේ දෝෂයකි.');
+        }
     }
 }
 
