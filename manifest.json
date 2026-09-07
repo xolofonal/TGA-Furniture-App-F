@@ -1,0 +1,16 @@
+{
+  "short_name": "TGA Furniture",
+  "name": "TGA Furniture Management App",
+"icons": [
+  {
+    "src": "https://dummyimage.com/192x192/3d2314/ffffff.png&text=TGA",
+    "type": "image/png",
+    "sizes": "192x192"
+  }
+],
+  "start_url": "/",
+  "background_color": "#3d2314",
+  "theme_color": "#3d2314",
+  "display": "standalone",
+  "orientation": "portrait"
+}

@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-main: #fcf9f5;
+    --primary-brown: #67412c;
+    --primary-dark: #4a2e1e;
+    --accent-brown: #8c5a3c;
+    --light-brown: #f4ede4;
+    --text-dark: #2c221e;
+    --border-color: #e2d7cd;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+/* Eye-Friendly Brown Form Input Class */
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background-color: #ffffff;
+    color: var(--text-dark);
+    font-size: 0.85rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: var(--accent-brown);
+    box-shadow: 0 0 0 3px rgba(140, 90, 60, 0.15);
+}
+
+.keypad-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    width: 64px;
+    height: 64px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* මෙතන නිවැරදි කර ඇත */
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.keypad-btn:active {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(0.95);
+}
+
+/* PIN Circles */
+.pin-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid #b8977e;
+    background-color: rgba(44, 34, 30, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+}
+
+.pin-circle.filled {
+    background-color: var(--accent-brown);
+    border-color: #d1b49e;
+    box-shadow: 0 0 10px rgba(140, 90, 60, 0.5);
+}
