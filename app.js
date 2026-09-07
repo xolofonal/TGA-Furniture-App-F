@@ -672,7 +672,25 @@ function downloadReportPDF() {
     doc.text(`Total Sales Amount : Rs. ${grandTotalAmount}`, 14, finalY + 10);
     doc.text(`Total Profit       : Rs. ${grandTotalProfit}`, 14, finalY + 17);
 
-    doc.save(`TGA_Sales_Report_${activeBranchView}_${new Date().toISOString().split('T')[0]}.pdf`);
+    // --- Mobile Friendly PDF Download Fix ---
+    const fileName = `TGA_Sales_Report_${activeBranchView}_${new Date().toISOString().split('T')[0]}.pdf`;
+    
+    // PDF එක Blob එකක් ලෙස ලබා ගැනීම
+    const pdfBlob = doc.output('blob');
+    const blobUrl = URL.createObjectURL(pdfBlob);
+
+    // Anchor Element එකක් සාදා Download එක Trigger කිරීම
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up
+    setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+    }, 100);
 }
 
 function promptInstallmentPay(saleId, monthNumber) {
