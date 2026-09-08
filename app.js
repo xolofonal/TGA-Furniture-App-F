@@ -37,7 +37,7 @@ function renderGallery() {
     const filteredItems = window.galleryItemsCache.filter(item => (item.category || 'furniture') === activeCategory);
 
     if (filteredItems.length === 0) {
-        grid.innerHTML = `<p class="text-xs text-slate-400 col-span-2 text-center py-4">මෙම Category එකෙහි Items කිසිවක් නැත.</p>`;
+        grid.innerHTML = `<p class="text-xs text-slate-400 col-span-2 text-center py-4">There are no items in this category.</p>`;
         return;
     }
 
@@ -126,8 +126,8 @@ function checkInstallmentAlerts(sales) {
                 const dueDate = new Date(inst.dueDate).toISOString().split('T')[0];
                 if (inst.status === 'unpaid' && dueDate <= today) {
                     showPushNotification(
-                        "ගෙවීම් හිඟයක් ඇත!", 
-                        `${sale.customerName} මහතාගේ Month 0${inst.monthNumber} වාරිකය ගෙවීමට කාලය පැනගොස් ඇත.`
+                        "There are outstanding payments!", 
+                        `${sale.customerName} Month 0${inst.monthNumber} has passed the deadline for paying the premium has passed.`
                     );
                 }
             });
@@ -152,7 +152,7 @@ function checkLowStockNotifications(items) {
                 <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl flex justify-between items-center text-xs">
                     <div>
                         <p class="font-bold text-amber-900">⚠️ Low Stock </p>
-                        <p class="text-amber-700">${item.name} remains at present is <b>${item.quantity}</b> කි.</p>
+                        <p class="text-amber-700">${item.name} remains at present is <b>${item.quantity}</b></p>
                     </div>
                     <span class="bg-amber-200 text-amber-900 font-bold px-2 py-1 rounded-lg text-[10px]">
                         Qty: ${item.quantity}
@@ -209,10 +209,10 @@ async function handleLogin() {
             localStorage.setItem('tga_user_pin', data.pin);
             initAppUI();
         } else {
-            alert(data.error || 'Login අසාර්ථක විය.');
+            alert(data.error || 'Login failed.');
         }
     } catch (err) {
-        alert('Server සම්බන්ධතාවයේ දෝෂයකි.');
+        alert('Server lost connection.');
     }
 }
 
@@ -232,12 +232,12 @@ async function handlePinSubmit() {
             activeUser = { userId, role: data.role, branch: data.branch };
             initAppUI();
         } else {
-            alert('PIN එක වැරදියි! නැවත උත්සාහ කරන්න.');
+            alert('PIN is wrong! Try again.');
             enteredPin = "";
             updatePinDots();
         }
     } catch (err) {
-        alert('Server සම්බන්ධතාවයේ දෝෂයකි.');
+        alert('Server lost the connection.');
     }
 }
 
@@ -268,7 +268,7 @@ function initAppUI() {
     }
 
     loadGallery();
-    fetchReports(); // <-- මෙතැනට එකතු කරන්න (App එක open කරද්දීම පැරණි Reports load වේ)
+    fetchReports();
     requestNotificationPermission();
 }
 
@@ -308,7 +308,7 @@ async function submitAddItem() {
     const photo = await convertFileToBase64(photoFile);
 
     if (!name || quantity <= 0) {
-        alert('කරුණාකර Item Name සහ Quantity නිවැරදිව ඇතුළත් කරන්න.');
+        alert('Please enter the Item Name and the Quantity correctly.');
         return;
     }
 
@@ -433,7 +433,7 @@ function handleMonthsSelectChange() {
 
 function openSellModal() {
     if (!selectedItem || selectedItem.quantity <= 0) {
-        alert('මෙම භාණ්ඩය තොගයේ නොමැත (Out of Stock)!');
+        alert('This item is not available. (Out of Stock)!');
         return;
     }
     closeModal('modal-item-options');
@@ -452,17 +452,17 @@ async function submitSell() {
     const qtyInput = parseInt(document.getElementById('sell-qty').value) || 0;
 
     if (!selectedItem || selectedItem.quantity <= 0) {
-        alert('මෙම භාණ්ඩය තොගයේ නොමැත!');
+        alert('This item is not available. (Out of Stock)!');
         return;
     }
 
     if (qtyInput <= 0) {
-        alert('කරුණාකර නිවැරදි Quantity එකක් ඇතුළත් කරන්න.');
+        alert('Please enter the correct Quantity.');
         return;
     }
 
     if (qtyInput > selectedItem.quantity) {
-        alert(`තොගයේ ඇත්තේ භාණ්ඩ ${selectedItem.quantity} ක් පමණි. කරුණාකර ප්‍රමාණය පරීක්ෂා කරන්න.`);
+        alert(`There are only  ${selectedItem.quantity} items in stock. Please check the quantity.`);
         return;
     }
 
@@ -470,7 +470,7 @@ async function submitSell() {
     if (monthsVal === 'custom') {
         monthsVal = document.getElementById('sell-custom-months').value;
         if (!monthsVal || monthsVal < 1 || monthsVal > 12) {
-            alert('කරුණාකර මාස 1 සිට 12 දක්වා ප්‍රමාණයක් ඇතුළත් කරන්න.');
+            alert('Please enter a value between 1 and 12 months.');
             return;
         }
     }
@@ -496,18 +496,17 @@ async function submitSell() {
     });
 
     if (res.ok) {
-        alert('විකිණීම සාර්ථකයි!');
+        alert('The sale was successful !');
         closeModal('modal-sell');
         loadGallery();
         fetchReports();
         switchTab('reports');
     } else {
         const errorData = await res.json();
-        alert(errorData.error || 'ගනුදෙනුව අසාර්ථක විය.');
+        alert(errorData.error || 'The sale was unsuccessful.');
     }
 }
 
-// Fetch Reports (Profit පෙන්වන්නේ Admin ට පමණි)
 async function fetchReports(branch = activeBranchView) {
     try {
         const res = await fetch(`${API_BASE_URL}/api/reports/${branch}`);
@@ -572,11 +571,11 @@ async function fetchReports(branch = activeBranchView) {
 // Return වූ විට Report එක Delete කිරීමේ ශ්‍රිතය (Admin Only)
 async function returnAndDeleteReport(saleId) {
     if (!activeUser || activeUser.role !== 'admin') {
-        alert('මෙම ක්‍රියාව සිදු කිරීමට Admin ලෙස ලොග් විය යුතුය.');
+        alert('You must log in as an admin to perform this action.');
         return;
     }
 
-    if (confirm('මෙම භාණ්ඩය Return එකක් ලෙස සලකා Report එකෙන් ඉවත් කිරීමට ඔබට විශ්වාසද? (මෙහිදී අදාළ Item එකෙහි Quantity එක නැවත එකතු වේ)')) {
+    if (confirm('Are you sure you want to treat this item as a return and remove it from the report? (This will add the item quantity back to the stock.) ')) {
         try {
             const res = await fetch(`${API_BASE_URL}/api/sales/${saleId}`, {
                 method: 'DELETE',
@@ -587,21 +586,21 @@ async function returnAndDeleteReport(saleId) {
             });
 
             if (res.ok) {
-                alert('භාණ්ඩය Return එකක් ලෙස සලකා වාර්තාවෙන් ඉවත් කරන ලදී!');
+                alert('Your item was removed as a return/delete!');
                 fetchReports();
                 loadGallery();
             } else {
-                alert('Report එක ඉවත් කිරීම අසාර්ථක විය.');
+                alert('Report removing process was unsucsessful.');
             }
         } catch (err) {
-            alert('Server සම්බන්ධතාවයේ දෝෂයකි.');
+            alert('Server lost the connection.');
         }
     }
 }
 
 function downloadReportPDF() {
     if (!activeUser || activeUser.role !== 'admin') {
-        alert('Month-end PDF වාර්තා ලබා ගත හැක්කේ Admin හට පමණි.');
+        alert('Only Admin can acsess Month-end PDF.');
         return;
     }
 
@@ -695,7 +694,7 @@ function downloadReportPDF() {
 
 function promptInstallmentPay(saleId, monthNumber) {
     activePayPayload = { saleId, monthNumber };
-    document.getElementById('pay-modal-desc').innerText = `Month 0${monthNumber} සඳහා ගෙවීම් ලබාගත්තේ යැයි සටහන් කරන්නද?`;
+    document.getElementById('pay-modal-desc').innerText = `Month 0${monthNumber} Should I record that payments were received for it?`;
     document.getElementById('modal-pay-installment').classList.remove('hidden');
 }
 
@@ -707,7 +706,7 @@ async function confirmInstallmentPayment() {
     });
 
     if (res.ok) {
-        alert('ගෙවීම් සටහන් කිරීම සාර්ථකයි!');
+        alert('Payment recording successful!');
         closeModal('modal-pay-installment');
         fetchReports();
     }
@@ -715,7 +714,7 @@ async function confirmInstallmentPayment() {
 
 function openCleanupModal() {
     if (!activeUser || activeUser.role !== 'admin') {
-        alert('මෙම ක්‍රියාව සිදු කිරීමට Admin ලෙස ලොග් විය යුතුය.');
+        alert('You must log in as an administrator to perform this action.');
         return;
     }
     document.getElementById('modal-cleanup-options').classList.remove('hidden');
@@ -723,9 +722,9 @@ function openCleanupModal() {
 
 async function executeCleanup(type) {
     let confirmMsg = "";
-    if (type === 'full') confirmMsg = 'පද්ධතියේ සියලුම දත්ත (Sales & Gallery Items) ඉවත් කිරීමට ඔබට විශ්වාසද?';
-    if (type === 'reports') confirmMsg = 'සියලුම Sales Reports ඉවත් කිරීමට ඔබට විශ්වාසද?';
-    if (type === 'gallery') confirmMsg = 'සියලුම Gallery Items ඉවත් කිරීමට ඔබට විශ්වාසද?';
+    if (type === 'full') confirmMsg = 'Are you sure you want to remove all data (Sales & Gallery Items) from the system?';
+    if (type === 'reports') confirmMsg = 'Are you sure you want to remove all sales reports?';
+    if (type === 'gallery') confirmMsg = 'Are you sure you want to remove all gallery items?';
 
     if (confirm(confirmMsg)) {
         try {
@@ -740,16 +739,16 @@ async function executeCleanup(type) {
             const data = await res.json();
 
             if (res.ok) {
-                alert(data.message || 'Cleanup ක්‍රියාවලිය සාර්ථකයි!');
+                alert(data.message || 'The cleanup process was successful!');
                 closeModal('modal-cleanup-options');
                 fetchReports();
                 loadGallery();
             } else {
-                alert(data.error || 'Cleanup ක්‍රියාවලිය අසාර්ථක විය.');
+                alert(data.error || 'The cleanup process failed.');
             }
         } catch (err) {
             console.error('Cleanup Fetch Error:', err);
-            alert('Server සම්බන්ධතාවයේ දෝෂයකි.');
+            alert('Server lost connection.');
         }
     }
 }
@@ -762,7 +761,7 @@ async function submitCredentialChange() {
     const newPin = document.getElementById('new-pin').value;
 
     if (!newPassword && !newPin) {
-        alert('කරුණාකර නව Password එකක් හෝ PIN එකක් ඇතුළත් කරන්න.');
+        alert('Please enter a new password or PIN.');
         return;
     }
 
@@ -782,13 +781,13 @@ async function submitCredentialChange() {
         });
 
         if (res.ok) {
-            alert('පරිශීලක තොරතුරු සාර්ථකව යාවත්කාලීන විය!');
+            alert('User information successfully updated!');
             closeModal('modal-admin-settings');
         } else {
-            alert('යාවත්කාලීන කිරීම අසාර්ථක විය.');
+            alert('The update failed.');
         }
     } catch (err) {
-        alert('Server සම්බන්ධතාවයේ දෝෂයකි.');
+        alert('Server lost connection.');
     }
 }
 
@@ -808,21 +807,21 @@ function switchTab(tab) {
 
 async function deleteSelectedItem() {
     if (!selectedItem) return;
-    if (confirm('මෙම item එක ඉවත් කරන්නද?')) {
+    if (confirm('Do you want to remove this item?')) {
         try {
             const res = await fetch(`${API_BASE_URL}/api/items/${selectedItem._id}`, { 
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
             });
             if (res.ok) {
-                alert('Item එක සාර්ථකව ඉවත් කරන ලදී!');
+                alert('The item was successfully removed!');
                 closeModal('modal-item-options');
                 loadGallery();
             } else {
-                alert('Item එක Delete කිරීමට නොහැකි විය.');
+                alert('The item could not be deleted.');
             }
         } catch (err) {
-            alert('Server සම්බන්ධතාවයේ දෝෂයකි.');
+            alert('Server lost connection.');
         }
     }
 }
