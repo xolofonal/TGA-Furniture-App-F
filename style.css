@@ -72,3 +72,24 @@ body {
     box-shadow: 0 0 8px rgba(209, 180, 158, 0.6);
     transform: scale(1.15);
 }
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  
+  /* Box sizing එක border-box තැබීම වැදගත් */
+  box-sizing: border-box;
+
+  /* System Navigation bar එක තියෙන ප්‍රමාණයට අනුව පල්ලෙහායින් padding එකක් තබයි.
+     පරණ ෆෝන් සඳහා fallback එකක් ලෙස 16px හෝ 20px එකතු කර ඇත. */
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  
+  /* අතිරේක styling (ඔයාගේ design එක අනුව වෙනස් කරගන්න) */
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 9999;
+}
