@@ -180,13 +180,10 @@ function deleteKey() {
 function updatePinDots() {
     const circles = document.querySelectorAll('#pin-dots .pin-circle');
     circles.forEach((circle, index) => {
-        const span = circle.querySelector('span');
         if (index < enteredPin.length) {
             circle.classList.add('filled');
-            span.innerText = enteredPin[index];
         } else {
             circle.classList.remove('filled');
-            span.innerText = '';
         }
     });
 }
@@ -600,7 +597,7 @@ async function returnAndDeleteReport(saleId) {
 
 function downloadReportPDF() {
     if (!activeUser || activeUser.role !== 'admin') {
-        alert('Only Admin can acsess Month-end PDF.');
+        alert('Only Admin can access Month-end PDF.');
         return;
     }
 
@@ -644,26 +641,16 @@ function downloadReportPDF() {
         tableRows.push(rowData);
     });
 
-    // වගුව සෑදීම
     doc.autoTable({
         startY: 28,
         head: [['#', 'Customer Name', 'Item', 'Qty', 'Total Amount', 'Profit', 'Payment', 'Date']],
         body: tableRows,
         theme: 'striped',
-        headStyles: { 
-            fillColor: [103, 65, 44],
-            textColor: [255, 255, 255],
-            fontStyle: 'bold'
-        },
-        alternateRowStyles: {
-            fillColor: [244, 237, 228]
-        }
+        headStyles: { fillColor: [103, 65, 44], textColor: [255, 255, 255], fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [244, 237, 228] }
     });
 
-    // වගුව අවසන් වන Y පිහිටුම ලබා ගැනීම
     const finalY = doc.lastAutoTable.finalY || 30;
-
-    // Total Amount සහ Total Profit සටහන් කිරීම
     doc.setFontSize(11);
     doc.setTextColor(44, 34, 30);
     doc.setFont(undefined, 'bold');
@@ -671,25 +658,25 @@ function downloadReportPDF() {
     doc.text(`Total Sales Amount : Rs. ${grandTotalAmount}`, 14, finalY + 10);
     doc.text(`Total Profit       : Rs. ${grandTotalProfit}`, 14, finalY + 17);
 
-    // --- Mobile Friendly PDF Download Fix ---
     const fileName = `TGA_Sales_Report_${activeBranchView}_${new Date().toISOString().split('T')[0]}.pdf`;
-    
-    // PDF එක Blob එකක් ලෙස ලබා ගැනීම
-    const pdfBlob = doc.output('blob');
-    const blobUrl = URL.createObjectURL(pdfBlob);
 
-    // Anchor Element එකක් සාදා Download එක Trigger කිරීම
-    const link = document.createElement('a');
-    link.href = blobUrl;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
+    try {
+        const pdfBlob = doc.output('blob');
+        const blobUrl = URL.createObjectURL(pdfBlob);
 
-    // Clean up
-    setTimeout(() => {
+        // Mobile browsers & PWA safety fix
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
         document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-    }, 100);
+
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+    } catch (error) {
+        console.error("PDF generation error:", error);
+        doc.save(fileName);
+    }
 }
 
 function promptInstallmentPay(saleId, monthNumber) {
@@ -758,7 +745,29 @@ async function submitCredentialChange() {
     const targetBranch = document.getElementById('target-user-branch').value;
     const username = document.getElementById('target-username').value;
     const newPassword = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
     const newPin = document.getElementById('new-pin').value;
+    const confirmPin = document.getElementById('confirm-pin').value;
+
+    // Password Validation Checks
+    if (newPassword || confirmPassword) {
+        if (newPassword !== confirmPassword) {
+            alert('New Password and Confirm Password do not match!');
+            return;
+        }
+    }
+
+    // PIN Validation Checks
+    if (newPin || confirmPin) {
+        if (newPin !== confirmPin) {
+            alert('New PIN and Confirm PIN do not match!');
+            return;
+        }
+        if (newPin.length !== 6) {
+            alert('PIN must be exactly 6 digits.');
+            return;
+        }
+    }
 
     if (!newPassword && !newPin) {
         alert('Please enter a new password or PIN.');
@@ -773,8 +782,10 @@ async function submitCredentialChange() {
                 'user-role': activeUser ? activeUser.role : ''
             },
             body: JSON.stringify({ 
-                requesterRole: activeUser.role,
+                requesterRole: activeUser ? activeUser.role : '',
                 targetRole, 
+                targetBranch,
+                username,
                 newPassword, 
                 newPin 
             })
@@ -782,6 +793,12 @@ async function submitCredentialChange() {
 
         if (res.ok) {
             alert('User information successfully updated!');
+            // Input Fields Clear කිරීම
+            document.getElementById('target-username').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('new-pin').value = '';
+            document.getElementById('confirm-pin').value = '';
             closeModal('modal-admin-settings');
         } else {
             alert('The update failed.');
@@ -790,8 +807,6 @@ async function submitCredentialChange() {
         alert('Server lost connection.');
     }
 }
-
-// app_11.js හි line 332-340 අතර ඇති switchTab ශ්‍රිතය පහත පරිදි සකසන්න:
 
 function switchTab(tab) {
     document.getElementById('sec-gallery').className = tab === 'gallery' ? 'block' : 'hidden';
@@ -825,6 +840,27 @@ async function deleteSelectedItem() {
         }
     }
 }
+// Toggle Password/PIN visibility with Eye icon
+function togglePasswordVisibility(inputId, iconId) {
+    const inputField = document.getElementById(inputId);
+    const iconSvg = document.getElementById(iconId);
 
+    if (!inputField || !iconSvg) return;
+
+    if (inputField.type === "password") {
+        inputField.type = "text";
+        // ඇස වැසී ඇති රූපය (Eye Off Icon)
+        iconSvg.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+        `;
+    } else {
+        inputField.type = "password";
+        // ඇස ඇරී ඇති රූපය (Eye Open Icon)
+        iconSvg.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        `;
+    }
+}
 function openAdminSettingsModal() { document.getElementById('modal-admin-settings').classList.remove('hidden'); }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }

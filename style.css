@@ -57,24 +57,18 @@ body {
     transform: scale(0.95);
 }
 
-/* PIN Circles */
 .pin-circle {
-    width: 42px;
-    height: 42px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    border: 2px solid #b8977e;
-    background-color: rgba(44, 34, 30, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 1.1rem;
-    transition: all 0.2s ease;
+    border: 1.5px solid #d1b49e;
+    background-color: transparent;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .pin-circle.filled {
-    background-color: var(--accent-brown);
+    background-color: #d1b49e;
     border-color: #d1b49e;
-    box-shadow: 0 0 10px rgba(140, 90, 60, 0.5);
+    box-shadow: 0 0 8px rgba(209, 180, 158, 0.6);
+    transform: scale(1.15);
 }

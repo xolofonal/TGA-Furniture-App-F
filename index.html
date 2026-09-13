@@ -27,7 +27,15 @@
             </div>
             <div>
                 <label class="text-xs font-bold text-[#67412c]">Password</label>
-                <input type="password" id="password" placeholder="Password" class="form-input mt-1">
+                <div class="relative mt-1">
+                    <input type="password" id="password" placeholder="Password" class="form-input pr-10">
+                    <button type="button" onclick="togglePasswordVisibility('password', 'login-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                        <svg id="login-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
             <button onclick="handleLogin()" class="w-full bg-[#67412c] hover:bg-[#4a2e1e] text-white py-3 rounded-xl font-bold text-sm transition">LOG IN</button>
         </div>
@@ -37,12 +45,12 @@
                 <h2 class="text-xl font-bold text-[#d1b49e]">Enter Security PIN</h2>
                 <p class="text-xs text-[#a89282]">Enter your 6-digit PIN.</p>
                 <div id="pin-dots" class="flex space-x-2.5 justify-center py-4">
-                    <div class="pin-circle"><span></span></div>
-                    <div class="pin-circle"><span></span></div>
-                    <div class="pin-circle"><span></span></div>
-                    <div class="pin-circle"><span></span></div>
-                    <div class="pin-circle"><span></span></div>
-                    <div class="pin-circle"><span></span></div>
+                    <div class="pin-circle"></div>
+                    <div class="pin-circle"></div>
+                    <div class="pin-circle"></div>
+                    <div class="pin-circle"></div>
+                    <div class="pin-circle"></div>
+                    <div class="pin-circle"></div>
                 </div>
             </div>
 
@@ -121,36 +129,35 @@
                 </button>
             </div>
 
-<!-- Sales Reports Section එක තුළ -->
-<div id="admin-cleanup-container" class="hidden bg-[#fbebe8] border border-[#f0b1a8] p-3 rounded-xl">
-    <button onclick="openCleanupModal()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-2 rounded-lg text-xs font-bold">
-        ⚠️ SYSTEM CLEANUP OPTIONS
-    </button>
-</div>
+            <div id="admin-cleanup-container" class="hidden bg-[#fbebe8] border border-[#f0b1a8] p-3 rounded-xl">
+                <button onclick="openCleanupModal()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-2 rounded-lg text-xs font-bold">
+                    ⚠️ SYSTEM CLEANUP OPTIONS
+                </button>
+            </div>
 
-<!-- Cleanup Options Modal (index.html හි අගට එකතු කරන්න) -->
-<div id="modal-cleanup-options" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd]">
-        <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e]">System Cleanup Options</h3>
-        <p class="text-xs text-slate-500 mb-2">Please select the cleanup type you wish to remove:</p>
-        
-        <div class="space-y-2">
-            <button onclick="executeCleanup('full')" class="w-full bg-rose-700 hover:bg-rose-800 text-white py-2.5 rounded-xl font-bold text-xs">
-                 Full System Cleanup (All Data)
-            </button>
-            <button onclick="executeCleanup('reports')" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-bold text-xs">
-                 Reports Only Cleanup
-            </button>
-            <button onclick="executeCleanup('gallery')" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2.5 rounded-xl font-bold text-xs">
-                 Gallery Items Only Cleanup
-            </button>
-        </div>
+            <div id="modal-cleanup-options" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd]">
+                    <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e]">System Cleanup Options</h3>
+                    <p class="text-xs text-slate-500 mb-2">Please select the cleanup type you wish to remove:</p>
+                    
+                    <div class="space-y-2">
+                        <button onclick="executeCleanup('full')" class="w-full bg-rose-700 hover:bg-rose-800 text-white py-2.5 rounded-xl font-bold text-xs">
+                             Full System Cleanup (All Data)
+                        </button>
+                        <button onclick="executeCleanup('reports')" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-bold text-xs">
+                             Reports Only Cleanup
+                        </button>
+                        <button onclick="executeCleanup('gallery')" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2.5 rounded-xl font-bold text-xs">
+                             Gallery Items Only Cleanup
+                        </button>
+                    </div>
 
-        <button onclick="closeModal('modal-cleanup-options')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs mt-2">
-            Cancel
-        </button>
-    </div>
-</div>
+                    <button onclick="closeModal('modal-cleanup-options')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs mt-2">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
             <div id="report-preview-list" class="space-y-3"></div>
         </section>
 
@@ -222,50 +229,49 @@
         </div>
     </div>
 
-<!-- Sell Modal (index.html) -->
-<div id="modal-sell" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 max-h-[90vh] overflow-y-auto border border-[#e2d7cd]">
-        <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e]">Sell Item</h3>
-        
-        <!-- Selling Price එක පෙන්වන කොටස -->
-        <div class="space-y-1">
-            <label class="text-[10px] font-bold text-[#67412c]">Selling Price per Unit (Rs.)</label>
-            <input type="number" id="sell-selling-price" readonly class="form-input bg-slate-100 font-bold text-[#67412c]">
-        </div>
+    <!-- Sell Modal -->
+    <div id="modal-sell" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 max-h-[90vh] overflow-y-auto border border-[#e2d7cd]">
+            <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e]">Sell Item</h3>
+            
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c]">Selling Price per Unit (Rs.)</label>
+                <input type="number" id="sell-selling-price" readonly class="form-input bg-slate-100 font-bold text-[#67412c]">
+            </div>
 
-        <input type="text" id="sell-cust-name" placeholder="Customer Name" class="form-input">
-        <input type="text" id="sell-cust-area" placeholder="Area / Address" class="form-input">
-        <input type="tel" id="sell-cust-tel" placeholder="Telephone Number" class="form-input">
-        <input type="number" id="sell-qty" value="1" min="1" oninput="calculateProfit()" placeholder="Quantity" class="form-input">
-        <input type="date" id="sell-date" class="form-input">
-        
-        <label class="text-xs font-bold text-[#67412c] block">Payment Type</label>
-        <select id="sell-payment-type" onchange="toggleInstallmentOptions()" class="form-input">
-            <option value="cash">Cash Payment</option>
-            <option value="installment">Monthly Installments</option>
-        </select>
-
-        <div id="installment-months-box" class="hidden space-y-2">
-            <label class="text-xs font-bold text-[#67412c] block">Select Installment Months</label>
-            <select id="sell-months-select" onchange="handleMonthsSelectChange()" class="form-input">
-                <option value="3">3 Months</option>
-                <option value="6">6 Months</option>
-                <option value="custom">Custom (1-12 Months)</option>
+            <input type="text" id="sell-cust-name" placeholder="Customer Name" class="form-input">
+            <input type="text" id="sell-cust-area" placeholder="Area / Address" class="form-input">
+            <input type="tel" id="sell-cust-tel" placeholder="Telephone Number" class="form-input">
+            <input type="number" id="sell-qty" value="1" min="1" oninput="calculateProfit()" placeholder="Quantity" class="form-input">
+            <input type="date" id="sell-date" class="form-input">
+            
+            <label class="text-xs font-bold text-[#67412c] block">Payment Type</label>
+            <select id="sell-payment-type" onchange="toggleInstallmentOptions()" class="form-input">
+                <option value="cash">Cash Payment</option>
+                <option value="installment">Monthly Installments</option>
             </select>
-            <input type="number" id="sell-custom-months" min="1" max="12" placeholder="Enter Months (1 - 12)" class="form-input hidden">
-        </div>
 
-        <div class="space-y-1">
-            <label class="text-[10px] font-bold text-[#67412c]">Profit for this sale (Rs.)</label>
-            <input type="number" id="sell-profit" placeholder="Calculated Profit" class="form-input">
-        </div>
+            <div id="installment-months-box" class="hidden space-y-2">
+                <label class="text-xs font-bold text-[#67412c] block">Select Installment Months</label>
+                <select id="sell-months-select" onchange="handleMonthsSelectChange()" class="form-input">
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="custom">Custom (1-12 Months)</option>
+                </select>
+                <input type="number" id="sell-custom-months" min="1" max="12" placeholder="Enter Months (1 - 12)" class="form-input hidden">
+            </div>
 
-        <div class="flex space-x-2 pt-2">
-            <button onclick="submitSell()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Confirm Sale</button>
-            <button onclick="closeModal('modal-sell')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs">Cancel</button>
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c]">Profit for this sale (Rs.)</label>
+                <input type="number" id="sell-profit" placeholder="Calculated Profit" class="form-input">
+            </div>
+
+            <div class="flex space-x-2 pt-2">
+                <button onclick="submitSell()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Confirm Sale</button>
+                <button onclick="closeModal('modal-sell')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs">Cancel</button>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- Item Options Modal -->
     <div id="modal-item-options" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-end justify-center">
@@ -332,34 +338,77 @@
         </div>
     </div>
 
-    <!-- Admin Settings Modal -->
-    <div id="modal-admin-settings" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd]">
-            <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e]">Manage Accounts</h3>
-            <div>
-                <label class="text-xs font-bold text-[#67412c]">Select Role</label>
-                <select id="target-user-role" class="form-input mt-1">
-                    <option value="admin">Admin</option>
-                    <option value="manager">Branch Manager</option>
-                </select>
-            </div>
-            <div>
-                <label class="text-xs font-bold text-[#67412c]">Assign Branch</label>
-                <select id="target-user-branch" class="form-input mt-1">
-                    <option value="galenbindunuwewa">Galenbindunuwewa Branch</option>
-                    <option value="mihinthale">Mihinthale Branch</option>
-                    <option value="all">All Branches (Full Access)</option>
-                </select>
-            </div>
-            <input type="text" id="target-username" placeholder="Username" class="form-input">
-            <input type="password" id="new-password" placeholder="New Password" class="form-input">
-            <input type="password" id="new-pin" maxlength="6" placeholder="New 6-Digit PIN" class="form-input">
-            <div class="flex space-x-2 pt-2">
-                <button onclick="submitCredentialChange()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Save User</button>
-                <button onclick="closeModal('modal-admin-settings')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs">Cancel</button>
-            </div>
+<!-- Admin Settings Modal -->
+<div id="modal-admin-settings" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd]">
+        <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e]">Manage Accounts</h3>
+        <div>
+            <label class="text-xs font-bold text-[#67412c]">Select Role</label>
+            <select id="target-user-role" class="form-input mt-1">
+                <option value="admin">Admin</option>
+                <option value="manager">Branch Manager</option>
+            </select>
+        </div>
+        <div>
+            <label class="text-xs font-bold text-[#67412c]">Assign Branch</label>
+            <select id="target-user-branch" class="form-input mt-1">
+                <option value="galenbindunuwewa">Galenbindunuwewa Branch</option>
+                <option value="mihinthale">Mihinthale Branch</option>
+                <option value="all">All Branches (Full Access)</option>
+            </select>
+        </div>
+        <input type="text" id="target-username" placeholder="Username" class="form-input">
+        
+        <!-- New Password with Eye Icon -->
+        <div class="relative">
+            <input type="password" id="new-password" placeholder="New Password" class="form-input pr-10">
+            <button type="button" onclick="togglePasswordVisibility('new-password', 'new-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                <svg id="new-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Confirm Password with Eye Icon -->
+        <div class="relative">
+            <input type="password" id="confirm-password" placeholder="Confirm New Password" class="form-input pr-10">
+            <button type="button" onclick="togglePasswordVisibility('confirm-password', 'confirm-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                <svg id="confirm-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- New PIN with Eye Icon -->
+        <div class="relative">
+            <input type="password" id="new-pin" maxlength="6" placeholder="New 6-Digit PIN" class="form-input pr-10">
+            <button type="button" onclick="togglePasswordVisibility('new-pin', 'new-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                <svg id="new-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Confirm PIN with Eye Icon -->
+        <div class="relative">
+            <input type="password" id="confirm-pin" maxlength="6" placeholder="Confirm New 6-Digit PIN" class="form-input pr-10">
+            <button type="button" onclick="togglePasswordVisibility('confirm-pin', 'confirm-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                <svg id="confirm-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="flex space-x-2 pt-2">
+            <button onclick="submitCredentialChange()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Save User</button>
+            <button onclick="closeModal('modal-admin-settings')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs">Cancel</button>
         </div>
     </div>
+</div>
 
     <script src="app.js"></script>
 </body>
