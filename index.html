@@ -97,8 +97,8 @@
                 <button id="add-item-btn" onclick="openAddItemModal()" class="bg-[#67412c] hover:bg-[#4a2e1e] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm" id="lang-btn-additem">+ Add Item</button>
             </div>
 
-            <!-- Branch Switcher Dropdown (Emoji yerine Icon) -->
-            <div class="mb-3">
+            <!-- Branch Switcher Dropdown -->
+            <div id="gallery-branch-select-container" class="mb-3">
                 <select id="gallery-branch-select" onchange="onGalleryBranchChange(this.value)" class="form-input dark-input font-bold text-xs">
                     <option value="galenbindunuwewa" id="opt-gb">Galenbindunuwewa</option>
                     <option value="mihinthale" id="opt-mh">Mihinthale</option>
@@ -130,7 +130,7 @@
                         <div id="report-3dot-menu" class="hidden absolute right-0 top-8 w-48 bg-white dark-bg-box border border-[#e2d7cd] dark-border rounded-xl shadow-xl z-30 py-1">
                             <button onclick="openPdfModal()" class="w-full text-left px-4 py-2 text-xs font-bold hover:bg-[#f4ede4] dark-btn-sec flex items-center space-x-2 text-[#2c221e] dark-text-heading">
                                 <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
-                                <span id="menu-pdf-opt">Download PDF Report</span>
+                                <span id="menu-pdf-opt">View PDF Report</span>
                             </button>
                             <button id="admin-menu-cleanup" onclick="openCleanupModal()" class="w-full text-left px-4 py-2 text-xs font-bold hover:bg-rose-50 text-rose-600 flex items-center space-x-2">
                                 <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
@@ -142,7 +142,7 @@
 
                 <!-- Filters & Sorting Controls -->
                 <div class="grid grid-cols-2 gap-2 bg-[#f4ede4] dark-bg-box p-2 rounded-xl border border-[#e2d7cd] dark-border">
-                    <div>
+                    <div id="report-branch-select-container">
                         <label class="text-[10px] font-bold text-[#67412c] dark-text-sub block" id="lbl-branch-filter">Branch</label>
                         <select id="report-branch-select" onchange="fetchReports()" class="form-input text-xs p-1.5 dark-input">
                             <option value="galenbindunuwewa">Galenbindunuwewa</option>
@@ -191,109 +191,118 @@
             <div id="notification-list" class="space-y-2"></div>
         </section>
 
-        <!-- FULL PAGE SETTINGS SCREEN -->
-        <section id="sec-settings" class="hidden space-y-4 fixed inset-0 bg-[#fcf9f5] z-50 overflow-y-auto p-4 dark-bg-page">
-            <div class="flex items-center space-x-3 border-b border-[#e2d7cd] pb-3 pt-8 sm:pt-4 dark-border">
-                <button onclick="closeFullSettingsPage()" class="p-2 bg-[#f4ede4] hover:bg-[#e2d7cd] rounded-xl text-[#67412c] dark-btn-sec">
-                    <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
-                </button>
-                <h2 class="font-bold text-lg text-[#2c221e] dark-text-heading" id="lang-settings-heading">Settings</h2>
+<!-- FULL PAGE SETTINGS SCREEN -->
+<section id="sec-settings" class="hidden fixed inset-0 bg-[#fcf9f5] z-50 flex flex-col dark-bg-page">
+    
+    <!-- FIXED HEADER (Scroll වෙන්නේ නැත) -->
+    <div class="flex items-center space-x-3 border-b border-[#e2d7cd] p-4 pt-8 sm:pt-4 dark-border bg-[#fcf9f5] dark-bg-page shrink-0">
+        <button onclick="closeFullSettingsPage()" class="p-2 bg-[#f4ede4] hover:bg-[#e2d7cd] rounded-xl text-[#67412c] dark-btn-sec">
+            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
+            </svg>
+        </button>
+        <h2 class="font-bold text-lg text-[#2c221e] dark-text-heading" id="lang-settings-heading">Settings</h2>
+    </div>
+
+    <!-- SCROLLABLE CONTENT (පහළට Scroll වන කොටස) -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-4 max-w-lg mx-auto w-full">
+        <!-- Appearance Settings -->
+        <div class="bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-2 dark-bg-box dark-border">
+            <label class="text-xs font-bold text-[#67412c] dark-text-heading block" id="lang-setting-appearance">Appearance</label>
+            <div class="flex space-x-2">
+                <button onclick="setTheme('light')" id="theme-light-btn" class="w-1/2 py-2.5 rounded-xl font-bold text-xs border border-[#67412c] bg-[#67412c] text-white">Light Mode</button>
+                <button onclick="setTheme('dark')" id="theme-dark-btn" class="w-1/2 py-2.5 rounded-xl font-bold text-xs border border-[#e2d7cd] bg-slate-100 text-[#2c221e] dark-btn-sec">Dark Mode</button>
             </div>
+        </div>
 
-            <div class="space-y-4 max-w-lg mx-auto">
-                <div class="bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-2 dark-bg-box dark-border">
-                    <label class="text-xs font-bold text-[#67412c] dark-text-heading block" id="lang-setting-appearance">Appearance</label>
-                    <div class="flex space-x-2">
-                        <button onclick="setTheme('light')" id="theme-light-btn" class="w-1/2 py-2.5 rounded-xl font-bold text-xs border border-[#67412c] bg-[#67412c] text-white">Light Mode</button>
-                        <button onclick="setTheme('dark')" id="theme-dark-btn" class="w-1/2 py-2.5 rounded-xl font-bold text-xs border border-[#e2d7cd] bg-slate-100 text-[#2c221e] dark-btn-sec">Dark Mode</button>
-                    </div>
-                </div>
+        <!-- Language Settings -->
+        <div class="bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-2 dark-bg-box dark-border">
+            <label class="text-xs font-bold text-[#67412c] dark-text-heading block" id="lang-setting-language">Language / භාෂාව</label>
+            <select id="setting-language-select" onchange="changeAppLanguage(this.value)" class="form-input dark-input">
+                <option value="en">English (EN)</option>
+                <option value="si">සිංහල (SI)</option>
+            </select>
+        </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-2 dark-bg-box dark-border">
-                    <label class="text-xs font-bold text-[#67412c] dark-text-heading block" id="lang-setting-language">Language / භාෂාව</label>
-                    <select id="setting-language-select" onchange="changeAppLanguage(this.value)" class="form-input dark-input">
-                        <option value="en">English (EN)</option>
-                        <option value="si">සිංහල (SI)</option>
-                    </select>
-                </div>
-
-                <div class="bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-3 dark-bg-box dark-border">
-                    <h3 class="font-bold text-sm text-[#2c221e] border-b border-[#e2d7cd] pb-1.5 dark-text-heading dark-border" id="lang-setting-accounts">Manage Accounts</h3>
-                    <div>
-                        <label class="text-xs font-bold text-[#67412c] dark-text-sub" id="lang-lbl-role">Select Role</label>
-                        <select id="target-user-role" class="form-input mt-1 dark-input">
-                            <option value="admin">Admin</option>
-                            <option value="galenbindunuwewa">Manager - Galenbindunuwewa</option>
-                            <option value="mihinthale">Manager - Mihinthale</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#67412c] dark-text-sub" id="lang-lbl-branch">Assign Branch</label>
-                        <select id="target-user-branch" class="form-input mt-1 dark-input">
-                            <option value="galenbindunuwewa">Galenbindunuwewa Branch</option>
-                            <option value="mihinthale">Mihinthale Branch</option>
-                            <option value="all">All Branches (Full Access)</option>
-                        </select>
-                    </div>
-                    <input type="text" id="target-username" placeholder="Username" class="form-input dark-input">
-                    
-                    <div class="relative">
-                        <input type="password" id="new-password" placeholder="New Password" class="form-input pr-10 dark-input">
-                        <button type="button" onclick="togglePasswordVisibility('new-password', 'new-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
-                            <svg id="new-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="relative">
-                        <input type="password" id="confirm-password" placeholder="Confirm New Password" class="form-input pr-10 dark-input">
-                        <button type="button" onclick="togglePasswordVisibility('confirm-password', 'confirm-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
-                            <svg id="confirm-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="relative">
-                        <input type="password" id="new-pin" maxlength="6" placeholder="New 6-Digit PIN" class="form-input pr-10 dark-input">
-                        <button type="button" onclick="togglePasswordVisibility('new-pin', 'new-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
-                            <svg id="new-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="relative">
-                        <input type="password" id="confirm-pin" maxlength="6" placeholder="Confirm New 6-Digit PIN" class="form-input pr-10 dark-input">
-                        <button type="button" onclick="togglePasswordVisibility('confirm-pin', 'confirm-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
-                            <svg id="confirm-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <button onclick="submitCredentialChange()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs" id="lang-btn-saveuser">Save User</button>
-                </div>
-
-                <!-- System Cleanup Button Moving Above Logout -->
-                <div id="admin-cleanup-container" class="hidden bg-[#fbebe8] border border-[#f0b1a8] p-3 rounded-2xl dark-bg-box">
-                    <button onclick="openCleanupModal()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center space-x-2" id="lang-btn-cleanup">
-                        <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
-                        <span>System Cleanup Options</span>
-                    </button>
-                </div>
-
-                <button onclick="handleLogout()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-3 rounded-2xl font-bold text-xs shadow-md flex items-center justify-center space-x-2">
-                    <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
-                    <span id="lang-btn-logout">Log Out</span>
+        <!-- Manage Accounts Section (ADMIN ONLY) -->
+        <div id="admin-accounts-section" class="hidden bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-3 dark-bg-box dark-border">
+            <h3 class="font-bold text-sm text-[#2c221e] border-b border-[#e2d7cd] pb-1.5 dark-text-heading dark-border" id="lang-setting-accounts">Manage Accounts</h3>
+            <div>
+                <label class="text-xs font-bold text-[#67412c] dark-text-sub" id="lang-lbl-role">Select Role</label>
+                <select id="target-user-role" class="form-input mt-1 dark-input">
+                    <option value="admin">Admin</option>
+                    <option value="galenbindunuwewa">Manager - Galenbindunuwewa</option>
+                    <option value="mihinthale">Manager - Mihinthale</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-[#67412c] dark-text-sub" id="lang-lbl-branch">Assign Branch</label>
+                <select id="target-user-branch" class="form-input mt-1 dark-input">
+                    <option value="galenbindunuwewa">Galenbindunuwewa Branch</option>
+                    <option value="mihinthale">Mihinthale Branch</option>
+                    <option value="all">All Branches (Full Access)</option>
+                </select>
+            </div>
+            <input type="text" id="target-username" placeholder="Username" class="form-input dark-input">
+            
+            <div class="relative">
+                <input type="password" id="new-password" placeholder="New Password" class="form-input pr-10 dark-input">
+                <button type="button" onclick="togglePasswordVisibility('new-password', 'new-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                    <svg id="new-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
                 </button>
             </div>
-        </section>
+
+            <div class="relative">
+                <input type="password" id="confirm-password" placeholder="Confirm New Password" class="form-input pr-10 dark-input">
+                <button type="button" onclick="togglePasswordVisibility('confirm-password', 'confirm-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                    <svg id="confirm-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="relative">
+                <input type="password" id="new-pin" maxlength="6" placeholder="New 6-Digit PIN" class="form-input pr-10 dark-input">
+                <button type="button" onclick="togglePasswordVisibility('new-pin', 'new-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                    <svg id="new-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="relative">
+                <input type="password" id="confirm-pin" maxlength="6" placeholder="Confirm New 6-Digit PIN" class="form-input pr-10 dark-input">
+                <button type="button" onclick="togglePasswordVisibility('confirm-pin', 'confirm-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                    <svg id="confirm-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+            </div>
+
+            <button onclick="submitCredentialChange()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs" id="lang-btn-saveuser">Save User</button>
+        </div>
+
+        <!-- System Cleanup Button (ADMIN ONLY) -->
+        <div id="admin-cleanup-container" class="hidden bg-[#fbebe8] border border-[#f0b1a8] p-3 rounded-2xl dark-bg-box">
+            <button onclick="openCleanupModal()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center space-x-2" id="lang-btn-cleanup">
+                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                <span>System Cleanup Options</span>
+            </button>
+        </div>
+
+        <!-- Logout Button (EVERYONE) -->
+        <button onclick="handleLogout()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-3 rounded-2xl font-bold text-xs shadow-md flex items-center justify-center space-x-2">
+            <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+            <span id="lang-btn-logout">Log Out</span>
+        </button>
+    </div>
+</section>
     </main>
 
     <!-- Bottom Navigation Bar -->

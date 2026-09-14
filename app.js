@@ -267,6 +267,10 @@ function toggleReportMenu() {
 }
 
 function openPdfModal() {
+    if (activeUser && activeUser.role !== 'admin') {
+        alert('PDF download option is only available for Admin users.');
+        return;
+    }
     toggleReportMenu();
     document.getElementById('modal-pdf-options').classList.remove('hidden');
 }
@@ -448,7 +452,9 @@ function downloadReportPDF(type) {
     doc.text(`Total Sales Amount : Rs. ${grandTotalAmount}`, 14, finalY + 10);
     doc.text(`Total Profit       : Rs. ${grandTotalProfit}`, 14, finalY + 17);
 
-    doc.save(`TGA_Sales_Report_${type}_${todayStr}.pdf`);
+    // PDF එක New Tab එකකින් View කිරීමට:
+const pdfBlobUrl = doc.output('bloburl');
+window.open(pdfBlobUrl, '_blank');
 }
 
 // ==========================================
@@ -539,24 +545,85 @@ function initAppUI() {
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('header-user-role').innerText = `Role: ${activeUser.role.toUpperCase()}`;
 
-    if (activeUser.role === 'admin') {
-        document.getElementById('admin-cleanup-container').classList.remove('hidden');
-        document.getElementById('admin-menu-cleanup').classList.remove('hidden');
-        document.getElementById('admin-settings-btn')?.classList.remove('hidden');
-        activeBranchView = 'galenbindunuwewa';
-    } else {
-        activeBranchView = activeUser.branch;
-        document.getElementById('add-item-btn').classList.add('hidden');
-        document.getElementById('btn-opt-edit').classList.add('hidden');
-        document.getElementById('btn-opt-delete').classList.add('hidden');
-        document.getElementById('admin-menu-cleanup').classList.add('hidden');
-    }
+    // Settings Button එක සියලුම පරිශීලකයින්ට (Admin & Managers) දිස්වේ
+    const settingsBtn = document.getElementById('admin-settings-btn');
+    if (settingsBtn) settingsBtn.classList.remove('hidden');
 
-    document.getElementById('gallery-branch-select').value = activeBranchView;
-    document.getElementById('report-branch-select').value = activeBranchView;
+    const gallerySelectContainer = document.getElementById('gallery-branch-select-container');
+    const reportSelectContainer = document.getElementById('report-branch-select-container');
+
+    if (activeUser.role === 'admin') {
+        // Admin සදහා Manage Accounts සහ Cleanup කොටස් විවෘත වේ
+        document.getElementById('admin-cleanup-container')?.classList.remove('hidden');
+        document.getElementById('admin-menu-cleanup')?.classList.remove('hidden');
+        document.getElementById('admin-accounts-section')?.classList.remove('hidden'); 
+        
+        if (gallerySelectContainer) gallerySelectContainer.classList.remove('hidden');
+        if (reportSelectContainer) reportSelectContainer.classList.remove('hidden');
+
+        activeBranchView = document.getElementById('gallery-branch-select')?.value || 'galenbindunuwewa';
+    } else {
+        // Manager සදහා Manage Accounts සහ Admin පමණක් භාවිතා කරන කොටස් Hide වේ
+        activeBranchView = activeUser.branch;
+        
+        document.getElementById('add-item-btn')?.classList.add('hidden');
+        document.getElementById('btn-opt-edit')?.classList.add('hidden');
+        document.getElementById('btn-opt-delete')?.classList.add('hidden');
+        document.getElementById('admin-menu-cleanup')?.classList.add('hidden');
+        document.getElementById('admin-cleanup-container')?.classList.add('hidden');
+        
+        // Settings ඇතුළත ඇති Manage Accounts කොටස Managers ලට Hide කෙරේ
+        document.getElementById('admin-accounts-section')?.classList.add('hidden'); 
+
+        if (gallerySelectContainer) gallerySelectContainer.classList.add('hidden');
+        if (reportSelectContainer) reportSelectContainer.classList.add('hidden');
+
+        const gallerySelect = document.getElementById('gallery-branch-select');
+        const reportSelect = document.getElementById('report-branch-select');
+        if (gallerySelect) gallerySelect.value = activeUser.branch;
+        if (reportSelect) reportSelect.value = activeUser.branch;
+    }
 
     loadGallery();
     fetchReports();
+}
+
+// Gallery render වන විට Non-admin නම් Branch Name එක පෙන්වීම
+function renderGallery() {
+    const grid = document.getElementById('gallery-grid');
+    if (!window.galleryItemsCache) return;
+
+    const filteredItems = window.galleryItemsCache.filter(item => (item.category || 'furniture') === activeCategory);
+
+    if (filteredItems.length === 0) {
+        grid.innerHTML = `<p class="text-xs text-slate-400 col-span-2 text-center py-4">There are no items in this category.</p>`;
+        return;
+    }
+
+    grid.innerHTML = filteredItems.map(item => `
+        <div onclick="openItemOptions('${item._id}')" class="bg-white dark-bg-box dark-border p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer">
+            <img src="${item.photo || 'https://via.placeholder.com/150'}" class="w-full h-28 object-cover rounded-xl bg-slate-100">
+            <div class="mt-2 space-y-1">
+                <h4 class="font-bold text-xs text-slate-800 dark-text-heading truncate">${item.name}</h4>
+                <p class="text-[10px] text-slate-500 font-semibold dark-text-sub">Branch: ${(item.branch || activeBranchView).toUpperCase()}</p>
+                <p class="text-[10px] text-slate-400 dark-text-sub">Size: ${item.size}</p>
+                <p class="text-xs font-bold text-indigo-600 dark-text">Rs. ${item.sellingPrice || 0}</p>
+                <span class="inline-block text-[9px] ${item.quantity <= 2 ? 'bg-rose-100 text-rose-600 font-bold' : 'bg-slate-100 text-slate-600 dark-btn-sec'} px-2 py-0.5 rounded-md font-bold">
+                    Qty: ${item.quantity} ${item.quantity <= 2 ? '(Low Stock)' : ''}
+                </span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// PDF Modal opening restriction logic update
+function openPdfModal() {
+    toggleReportMenu();
+    if (activeUser && activeUser.role !== 'admin') {
+        alert('PDF download option is only available for Admin users.');
+        return;
+    }
+    document.getElementById('modal-pdf-options').classList.remove('hidden');
 }
 
 async function loadGallery() {
