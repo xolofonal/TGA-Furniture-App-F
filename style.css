@@ -18,7 +18,6 @@ body {
     user-select: none;
 }
 
-/* Eye-Friendly Brown Form Input Class */
 .form-input {
     width: 100%;
     padding: 10px 12px;
@@ -46,7 +45,7 @@ body {
     border-radius: 9999px;
     display: flex;
     align-items: center;
-    justify-content: center; /* මෙතන නිවැරදි කර ඇත */
+    justify-content: center;
     margin: 0 auto;
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: background 0.15s ease, transform 0.1s ease;
@@ -72,7 +71,7 @@ body {
     box-shadow: 0 0 8px rgba(209, 180, 158, 0.6);
     transform: scale(1.15);
 }
-/* Safe Area Paddings for Modern Mobile Devices (iOS/Android Notch & Nav Bar) */
+
 header {
     padding-top: max(16px, env(safe-area-inset-top));
 }
@@ -81,7 +80,62 @@ body {
     padding-bottom: calc(80px + env(safe-area-inset-bottom));
 }
 
-.bottom-safe-bar {
-    height: max(24px, env(safe-area-inset-bottom));
-    background-color: #2c221e;
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background-color: #f4ede4;
+    border: 1.5px dashed #8c5a3c;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.file-upload-wrapper:hover {
+    background-color: #e2d7cd;
+    border-color: #67412c;
+}
+
+/* DARK MODE STYLES */
+body.dark-theme {
+    background-color: #1a1614 !important;
+    color: #e6ded6 !important;
+}
+
+body.dark-theme .dark-bg-page {
+    background-color: #1a1614 !important;
+}
+
+body.dark-theme .dark-bg-box {
+    background-color: #2a221d !important;
+    color: #e6ded6 !important;
+}
+
+body.dark-theme .dark-border {
+    border-color: #4a3b32 !important;
+}
+
+body.dark-theme .dark-text-heading {
+    color: #f0e6df !important;
+}
+
+body.dark-theme .dark-text-sub {
+    color: #c2b2a6 !important;
+}
+
+body.dark-theme .dark-text {
+    color: #d1b49e !important;
+}
+
+body.dark-theme .dark-input {
+    background-color: #221c18 !important;
+    border-color: #4a3b32 !important;
+    color: #ffffff !important;
+}
+
+body.dark-theme .dark-btn-sec {
+    background-color: #3b2d26 !important;
+    color: #d1b49e !important;
 }
