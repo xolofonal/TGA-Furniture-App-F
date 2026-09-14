@@ -46,7 +46,7 @@ const translations = {
     },
     si: {
         settings: "සැකසීම්",
-        appearance: "පෙනුම (Theme)",
+        appearance: "පෙනුම (තේමාව)",
         language: "භාෂාව / Language",
         manageAccounts: "ගිණුම් කළමනාකරණය",
         selectRole: "තනතුර තෝරන්න",
@@ -57,7 +57,7 @@ const translations = {
         addItem: "+ අලුත් භාණ්ඩයක්",
         reports: "අලෙවි වාර්තා",
         cleanup: "පද්ධති පිරිසිදු කිරීම්",
-        alerts: "දැනුම්දීම්",
+        alerts: "දැනුම්දීම් සහ අනතුරු ඇඟවීම්",
         navGallery: "ගැලරිය",
         navReports: "වාර්තා",
         navAlerts: "දැනුම්දීම්",
