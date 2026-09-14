@@ -3,9 +3,10 @@
   "name": "TGA Furniture Management App",
 "icons": [
   {
-    "src": "https://dummyimage.com/192x192/3d2314/ffffff.png&text=TGA",
+    "src": "tga logo.png",
+    "sizes": "512x512",
     "type": "image/png",
-    "sizes": "192x192"
+    "purpose": "any maskable"
   }
 ],
   "start_url": "/",
