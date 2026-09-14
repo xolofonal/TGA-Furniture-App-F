@@ -139,3 +139,14 @@ body.dark-theme .dark-btn-sec {
     background-color: #3b2d26 !important;
     color: #d1b49e !important;
 }
+/* Notification Container එක පහළට කිරීමට */
+.notification-dropdown, 
+#notification-list {
+    margin-top: 12px; /* Button එකේ සිට පහළට ඇති පරතරය */
+}
+
+/* Notification දෙකක් අතර ඉඩ (Gap) තැබීමට */
+.notification-item {
+    margin-bottom: 10px; /* Notifications දෙකක් අතර පරතරය */
+    padding: 10px;       /* ඇතුළත ඉඩ කඩ සකස් කිරීමට */
+}
