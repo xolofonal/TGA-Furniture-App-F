@@ -87,6 +87,7 @@ window.onload = () => {
         document.getElementById('pin-box').classList.remove('hidden');
     }
 };
+
 // ==========================================
 // Language & Theme Logic
 // ==========================================
@@ -159,11 +160,15 @@ function changeAppLanguage(lang) {
 }
 
 function handleLogout() {
-    if (confirm('Are you sure you want to log out?')) {
+    const isSi = currentLanguage === 'si';
+    const msg = isSi ? 'ඔබට පද්ධතියෙන් ඉවත් වීමට අවශ්‍ය බව තහවුරු කරන්නද?' : 'Are you sure you want to log out?';
+    const title = isSi ? 'ඉවත් වීම තහවුරු කරන්න' : 'Confirm Logout';
+
+    showCustomConfirm(msg, title, () => {
         localStorage.removeItem('tga_user_id');
         localStorage.removeItem('tga_user_pin');
         location.reload();
-    }
+    });
 }
 
 // ==========================================
@@ -181,32 +186,6 @@ function filterGalleryCategory(category) {
     document.getElementById('cat-tab-helix').className = category === 'helix' ? 'w-1/3 py-1.5 rounded-lg text-xs font-bold transition bg-[#67412c] text-white' : 'w-1/3 py-1.5 rounded-lg text-xs font-bold transition text-[#67412c] dark-text';
     
     renderGallery();
-}
-
-function renderGallery() {
-    const grid = document.getElementById('gallery-grid');
-    if (!window.galleryItemsCache) return;
-
-    const filteredItems = window.galleryItemsCache.filter(item => (item.category || 'furniture') === activeCategory);
-
-    if (filteredItems.length === 0) {
-        grid.innerHTML = `<p class="text-xs text-slate-400 col-span-2 text-center py-4">There are no items in this category.</p>`;
-        return;
-    }
-
-    grid.innerHTML = filteredItems.map(item => `
-        <div onclick="openItemOptions('${item._id}')" class="bg-white dark-bg-box dark-border p-3 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer">
-            <img src="${item.photo || 'https://via.placeholder.com/150'}" class="w-full h-28 object-cover rounded-xl bg-slate-100">
-            <div class="mt-2 space-y-1">
-                <h4 class="font-bold text-xs text-slate-800 dark-text-heading truncate">${item.name}</h4>
-                <p class="text-[10px] text-slate-400 dark-text-sub">Size: ${item.size}</p>
-                <p class="text-xs font-bold text-indigo-600 dark-text">Rs. ${item.sellingPrice || 0}</p>
-                <span class="inline-block text-[9px] ${item.quantity <= 2 ? 'bg-rose-100 text-rose-600 font-bold' : 'bg-slate-100 text-slate-600 dark-btn-sec'} px-2 py-0.5 rounded-md font-bold">
-                    Qty: ${item.quantity} ${item.quantity <= 2 ? '(Low Stock)' : ''}
-                </span>
-            </div>
-        </div>
-    `).join('');
 }
 
 // ==========================================
@@ -266,15 +245,6 @@ function toggleReportMenu() {
     menu.classList.toggle('hidden');
 }
 
-function openPdfModal() {
-    if (activeUser && activeUser.role !== 'admin') {
-        alert('PDF download option is only available for Admin users.');
-        return;
-    }
-    toggleReportMenu();
-    document.getElementById('modal-pdf-options').classList.remove('hidden');
-}
-
 async function fetchReports() {
     const branch = document.getElementById('report-branch-select').value;
     try {
@@ -288,12 +258,11 @@ async function fetchReports() {
 }
 
 function applyReportFilters() {
-    const selectedMonth = document.getElementById('report-month-select').value; // YYYY-MM
+    const selectedMonth = document.getElementById('report-month-select').value;
     const sortBy = document.getElementById('report-sort-select').value;
 
     let filtered = [...currentReportsCache];
 
-    // Month Filtering
     if (selectedMonth) {
         filtered = filtered.filter(s => {
             if (!s.saleDate) return false;
@@ -301,7 +270,6 @@ function applyReportFilters() {
         });
     }
 
-    // Sorting
     filtered.sort((a, b) => {
         const priceA = a.totalAmount || ((a.sellingPrice || 0) * (a.quantity || 1));
         const priceB = b.totalAmount || ((b.sellingPrice || 0) * (b.quantity || 1));
@@ -334,6 +302,7 @@ function renderReportList(sales) {
     container.innerHTML = sales.map(s => {
         const totalAmount = s.totalAmount || ((s.sellingPrice || 0) * (s.quantity || 1));
         const telNumber = s.customerTel ? s.customerTel.trim() : '';
+        const formattedDate = s.saleDate ? new Date(s.saleDate).toLocaleDateString() : 'N/A';
 
         return `
         <div class="bg-white dark-bg-box dark-border p-4 rounded-xl border border-[#e2d7cd] shadow-sm text-xs space-y-2">
@@ -345,6 +314,10 @@ function renderReportList(sales) {
             <p class="text-slate-700 dark-text-sub">
                 Item: <b>${s.itemName || 'Furniture Item'}</b> | Qty: ${s.quantity} | 
                 Tel: ${telNumber ? `<a href="tel:${telNumber}" class="text-indigo-600 font-bold underline">${telNumber}</a>` : 'N/A'}
+            </p>
+
+            <p class="text-[11px] font-semibold text-slate-500 dark-text-sub">
+                Sale Date: <span class="text-slate-800 dark-text-heading">${formattedDate}</span>
             </p>
             
             <div class="flex justify-between bg-[#f4ede4] dark-bg-page p-2 rounded-lg text-[11px] font-bold text-[#67412c] dark-text">
@@ -397,7 +370,7 @@ function downloadReportPDF(type) {
     }
 
     if (reportsToExport.length === 0) {
-        alert('No data available for the selected PDF option.');
+        showCustomAlert('No data available for the selected PDF option.', 'Warning', 'info');
         return;
     }
 
@@ -452,9 +425,8 @@ function downloadReportPDF(type) {
     doc.text(`Total Sales Amount : Rs. ${grandTotalAmount}`, 14, finalY + 10);
     doc.text(`Total Profit       : Rs. ${grandTotalProfit}`, 14, finalY + 17);
 
-    // PDF එක New Tab එකකින් View කිරීමට:
-const pdfBlobUrl = doc.output('bloburl');
-window.open(pdfBlobUrl, '_blank');
+    const pdfBlobUrl = doc.output('bloburl');
+    window.open(pdfBlobUrl, '_blank');
 }
 
 // ==========================================
@@ -502,10 +474,10 @@ async function handleLogin() {
             localStorage.setItem('tga_user_pin', data.pin);
             initAppUI();
         } else {
-            alert(data.error || 'Login failed.');
+            showCustomAlert(data.error || 'Login failed.', 'Access Denied', 'error');
         }
     } catch (err) {
-        alert('Server lost connection.');
+        showCustomAlert('Server lost connection.', 'Connection Error', 'error');
     }
 }
 
@@ -525,12 +497,12 @@ async function handlePinSubmit() {
             activeUser = { userId, role: data.role, branch: data.branch };
             initAppUI();
         } else {
-            alert('PIN is wrong! Try again.');
+            showCustomAlert('PIN is wrong! Try again.', 'Access Denied', 'error');
             enteredPin = "";
             updatePinDots();
         }
     } catch (err) {
-        alert('Server lost the connection.');
+        showCustomAlert('Server lost the connection.', 'Connection Error', 'error');
     }
 }
 
@@ -545,7 +517,6 @@ function initAppUI() {
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('header-user-role').innerText = `Role: ${activeUser.role.toUpperCase()}`;
 
-    // Settings Button එක සියලුම පරිශීලකයින්ට (Admin & Managers) දිස්වේ
     const settingsBtn = document.getElementById('admin-settings-btn');
     if (settingsBtn) settingsBtn.classList.remove('hidden');
 
@@ -553,7 +524,6 @@ function initAppUI() {
     const reportSelectContainer = document.getElementById('report-branch-select-container');
 
     if (activeUser.role === 'admin') {
-        // Admin සදහා Manage Accounts සහ Cleanup කොටස් විවෘත වේ
         document.getElementById('admin-cleanup-container')?.classList.remove('hidden');
         document.getElementById('admin-menu-cleanup')?.classList.remove('hidden');
         document.getElementById('admin-accounts-section')?.classList.remove('hidden'); 
@@ -563,7 +533,6 @@ function initAppUI() {
 
         activeBranchView = document.getElementById('gallery-branch-select')?.value || 'galenbindunuwewa';
     } else {
-        // Manager සදහා Manage Accounts සහ Admin පමණක් භාවිතා කරන කොටස් Hide වේ
         activeBranchView = activeUser.branch;
         
         document.getElementById('add-item-btn')?.classList.add('hidden');
@@ -572,7 +541,6 @@ function initAppUI() {
         document.getElementById('admin-menu-cleanup')?.classList.add('hidden');
         document.getElementById('admin-cleanup-container')?.classList.add('hidden');
         
-        // Settings ඇතුළත ඇති Manage Accounts කොටස Managers ලට Hide කෙරේ
         document.getElementById('admin-accounts-section')?.classList.add('hidden'); 
 
         if (gallerySelectContainer) gallerySelectContainer.classList.add('hidden');
@@ -588,7 +556,6 @@ function initAppUI() {
     fetchReports();
 }
 
-// Gallery render වන විට Non-admin නම් Branch Name එක පෙන්වීම
 function renderGallery() {
     const grid = document.getElementById('gallery-grid');
     if (!window.galleryItemsCache) return;
@@ -616,11 +583,10 @@ function renderGallery() {
     `).join('');
 }
 
-// PDF Modal opening restriction logic update
 function openPdfModal() {
     toggleReportMenu();
     if (activeUser && activeUser.role !== 'admin') {
-        alert('PDF download option is only available for Admin users.');
+        showCustomAlert('PDF download option is only available for Admin users.', 'Access Restricted', 'error');
         return;
     }
     document.getElementById('modal-pdf-options').classList.remove('hidden');
@@ -656,7 +622,7 @@ async function submitAddItem() {
     const photo = await convertFileToBase64(photoFile);
 
     if (!name || quantity <= 0) {
-        alert('Please enter Item Name and Quantity correctly.');
+        showCustomAlert('Please enter Item Name and Quantity correctly.', 'Validation Error', 'error');
         return;
     }
 
@@ -679,14 +645,14 @@ async function submitAddItem() {
         });
 
         if (res.ok) {
-            alert('Item added successfully!');
+            showCustomAlert('Item added successfully!', 'Success', 'success');
             closeModal('modal-add-item');
             loadGallery();
         } else {
-            alert('Cannot add item to Gallery.');
+            showCustomAlert('Cannot add item to Gallery.', 'Operation Failed', 'error');
         }
     } catch (err) {
-        alert('Cannot connect to server.');
+        showCustomAlert('Cannot connect to server.', 'Connection Error', 'error');
     }
 }
 
@@ -746,11 +712,11 @@ async function submitEditItem() {
     });
 
     if (res.ok) {
-        alert('Item updated successfully!');
+        showCustomAlert('Item updated successfully!', 'Success', 'success');
         closeModal('modal-edit-item');
         loadGallery();
     } else {
-        alert('Item update failed!');
+        showCustomAlert('Item update failed!', 'Update Failed', 'error');
     }
 }
 
@@ -796,7 +762,7 @@ function handleMonthsSelectChange() {
 
 function openSellModal() {
     if (!selectedItem || selectedItem.quantity <= 0) {
-        alert('Out of Stock!');
+        showCustomAlert('Out of Stock!', 'Stock Alert', 'error');
         return;
     }
     closeModal('modal-item-options');
@@ -812,12 +778,12 @@ async function submitSell() {
     const qtyInput = parseInt(document.getElementById('sell-qty').value) || 0;
 
     if (!selectedItem || selectedItem.quantity <= 0) {
-        alert('Out of Stock!');
+        showCustomAlert('Out of Stock!', 'Stock Alert', 'error');
         return;
     }
 
     if (qtyInput <= 0 || qtyInput > selectedItem.quantity) {
-        alert('Invalid Quantity!');
+        showCustomAlert('Invalid Quantity!', 'Validation Error', 'error');
         return;
     }
 
@@ -847,23 +813,29 @@ async function submitSell() {
     });
 
     if (res.ok) {
-        alert('Sale successful!');
+        showCustomAlert('Sale successful!', 'Success', 'success');
         closeModal('modal-sell');
         loadGallery();
         fetchReports();
         switchTab('reports');
     } else {
-        alert('Sale failed.');
+        showCustomAlert('Sale failed.', 'Operation Failed', 'error');
     }
 }
 
 async function returnAndDeleteReport(saleId) {
     if (!activeUser || activeUser.role !== 'admin') {
-        alert('Admin access required.');
+        showCustomAlert('Admin access required.', 'Access Restricted', 'error');
         return;
     }
 
-    if (confirm('Return this item and remove sale? (Quantity will be restored to stock)')) {
+    const isSi = currentLanguage === 'si';
+    const msg = isSi 
+        ? 'මෙම අලෙවිය ඉවත් කර භාණ්ඩය නැවත තොගයට එකතු කිරීමට අවශ්‍යද?' 
+        : 'Return this item and remove sale? (Quantity will be restored to stock)';
+    const title = isSi ? 'අලෙවිය ඉවත් කිරීම' : 'Return & Remove Sale';
+
+    showCustomConfirm(msg, title, async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/sales/${saleId}`, {
                 method: 'DELETE',
@@ -871,16 +843,16 @@ async function returnAndDeleteReport(saleId) {
             });
 
             if (res.ok) {
-                alert('Sale removed & item returned!');
+                showCustomAlert('Sale removed & item returned!', 'Success', 'success');
                 fetchReports();
                 loadGallery();
             } else {
-                alert('Failed to delete sale.');
+                showCustomAlert('Failed to delete sale.', 'Operation Failed', 'error');
             }
         } catch (err) {
-            alert('Server error.');
+            showCustomAlert('Server error.', 'Connection Error', 'error');
         }
-    }
+    });
 }
 
 function promptInstallmentPay(saleId, monthNumber) {
@@ -897,7 +869,7 @@ async function confirmInstallmentPayment() {
     });
 
     if (res.ok) {
-        alert('Payment recorded!');
+        showCustomAlert('Payment recorded!', 'Success', 'success');
         closeModal('modal-pay-installment');
         fetchReports();
     }
@@ -905,14 +877,18 @@ async function confirmInstallmentPayment() {
 
 function openCleanupModal() {
     if (!activeUser || activeUser.role !== 'admin') {
-        alert('Admin access required.');
+        showCustomAlert('Admin access required.', 'Access Restricted', 'error');
         return;
     }
     document.getElementById('modal-cleanup-options').classList.remove('hidden');
 }
 
 async function executeCleanup(type) {
-    if (confirm('Are you sure you want to clean up selected data?')) {
+    const isSi = currentLanguage === 'si';
+    const msg = isSi ? 'තෝරාගත් දත්ත පද්ධතියෙන් පිරිසිදු කිරීමට ඔබට විශ්වාසද?' : 'Are you sure you want to clean up selected data?';
+    const title = isSi ? 'දත්ත පිරිසිදු කිරීම' : 'System Cleanup';
+
+    showCustomConfirm(msg, title, async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/admin/cleanup?type=${type}`, {
                 method: 'DELETE',
@@ -920,15 +896,15 @@ async function executeCleanup(type) {
             });
 
             if (res.ok) {
-                alert('Cleanup successful!');
+                showCustomAlert('Cleanup successful!', 'Success', 'success');
                 closeModal('modal-cleanup-options');
                 fetchReports();
                 loadGallery();
             }
         } catch (err) {
-            alert('Server error.');
+            showCustomAlert('Server error.', 'Connection Error', 'error');
         }
-    }
+    });
 }
 
 async function submitCredentialChange() {
@@ -941,12 +917,12 @@ async function submitCredentialChange() {
     const confirmPin = document.getElementById('confirm-pin').value;
 
     if (newPassword && newPassword !== confirmPassword) {
-        alert('Passwords do not match!');
+        showCustomAlert('Passwords do not match!', 'Validation Error', 'error');
         return;
     }
 
     if (newPin && newPin !== confirmPin) {
-        alert('PINs do not match!');
+        showCustomAlert('PINs do not match!', 'Validation Error', 'error');
         return;
     }
 
@@ -958,11 +934,11 @@ async function submitCredentialChange() {
         });
 
         if (res.ok) {
-            alert('User updated successfully!');
+            showCustomAlert('User updated successfully!', 'Success', 'success');
             closeFullSettingsPage();
         }
     } catch (err) {
-        alert('Server error.');
+        showCustomAlert('Server error.', 'Connection Error', 'error');
     }
 }
 
@@ -980,18 +956,23 @@ function switchTab(tab) {
 
 async function deleteSelectedItem() {
     if (!selectedItem) return;
-    if (confirm('Delete this item?')) {
+
+    const isSi = currentLanguage === 'si';
+    const msg = isSi ? 'මෙම භාණ්ඩය ඉවත් කිරීමට ඔබට විශ්වාසද?' : 'Are you sure you want to delete this item?';
+    const title = isSi ? 'භාණ්ඩය ඉවත් කිරීම' : 'Delete Item';
+
+    showCustomConfirm(msg, title, async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/items/${selectedItem._id}`, { method: 'DELETE' });
             if (res.ok) {
-                alert('Item deleted!');
+                showCustomAlert('Item deleted!', 'Success', 'success');
                 closeModal('modal-item-options');
                 loadGallery();
             }
         } catch (err) {
-            alert('Server error.');
+            showCustomAlert('Server error.', 'Connection Error', 'error');
         }
-    }
+    });
 }
 
 function convertFileToBase64(file) {
@@ -1020,4 +1001,123 @@ function togglePasswordVisibility(inputId, iconId) {
 
 function closeModal(id) {
     document.getElementById(id).classList.add('hidden');
+}
+
+function handleFilePreview(input, previewContainerId, previewImgId, loaderId, textId) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const container = document.getElementById(previewContainerId);
+    const previewImg = document.getElementById(previewImgId);
+    const loader = document.getElementById(loaderId);
+    const textSpan = document.getElementById(textId);
+
+    if (container) container.classList.remove('hidden');
+    if (loader) loader.classList.remove('hidden');
+    if (previewImg) previewImg.classList.add('hidden');
+    if (textSpan) textSpan.innerText = file.name;
+
+    const reader = new FileReader();
+
+    reader.onloadstart = function() {
+        if (loader) loader.classList.remove('hidden');
+    };
+
+    reader.onload = function(e) {
+        if (previewImg) {
+            previewImg.src = e.target.result;
+            previewImg.classList.remove('hidden');
+        }
+        if (loader) loader.classList.add('hidden');
+    };
+
+    reader.onerror = function() {
+        showCustomAlert("Failed to read image file.", "File Error", "error");
+        if (loader) loader.classList.add('hidden');
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function removeImagePreview(inputId, containerId, previewImgId, textId) {
+    const input = document.getElementById(inputId);
+    const container = document.getElementById(containerId);
+    const previewImg = document.getElementById(previewImgId);
+    const textSpan = document.getElementById(textId);
+
+    if (input) input.value = '';
+    if (previewImg) previewImg.src = '';
+    if (textSpan) textSpan.innerText = 'Choose Photo';
+    if (container) container.classList.add('hidden');
+}
+
+function showCustomAlert(message, title = 'TGA Alert', type = 'info') {
+    const modal = document.getElementById('modal-custom-alert');
+    const titleEl = document.getElementById('custom-alert-title');
+    const msgEl = document.getElementById('custom-alert-msg');
+    const iconEl = document.getElementById('custom-alert-icon');
+
+    if (!modal || !titleEl || !msgEl) {
+        alert(message);
+        return;
+    }
+
+    titleEl.innerText = title;
+    msgEl.innerText = message;
+
+    if (type === 'error') {
+        iconEl.className = "mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-rose-100 text-rose-600";
+        iconEl.innerHTML = `<svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>`;
+    } else if (type === 'success') {
+        iconEl.className = "mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 text-emerald-600";
+        iconEl.innerHTML = `<svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>`;
+    } else {
+        iconEl.className = "mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-[#f4ede4] text-[#67412c] dark-btn-sec";
+        iconEl.innerHTML = `<svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>`;
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closeCustomAlert() {
+    const modal = document.getElementById('modal-custom-alert');
+    if (modal) modal.classList.add('hidden');
+}
+
+// Custom Confirmation Dialog Logic
+let confirmActionCallback = null;
+
+function showCustomConfirm(message, title = 'Are you sure?', onConfirm, confirmBtnText = '') {
+    const modal = document.getElementById('modal-confirm-dialog');
+    const titleEl = document.getElementById('confirm-dialog-title');
+    const msgEl = document.getElementById('confirm-dialog-msg');
+    const yesBtn = document.getElementById('btn-confirm-yes');
+    const cancelBtn = document.getElementById('btn-confirm-cancel');
+
+    if (!modal) {
+        if (confirm(message)) onConfirm();
+        return;
+    }
+
+    const lang = currentLanguage || 'en';
+    titleEl.innerText = title;
+    msgEl.innerText = message;
+    
+    cancelBtn.innerText = lang === 'si' ? 'අවලංගු කරන්න' : 'Cancel';
+    yesBtn.innerText = confirmBtnText || (lang === 'si' ? 'ඔව්, තහවුරු කරන්න' : 'Yes, Proceed');
+
+    confirmActionCallback = onConfirm;
+    
+    yesBtn.onclick = () => {
+        if (confirmActionCallback) confirmActionCallback();
+        closeConfirmModal();
+    };
+
+    modal.classList.remove('hidden');
+}
+
+function closeConfirmModal() {
+    const modal = document.getElementById('modal-confirm-dialog');
+    if (modal) modal.classList.add('hidden');
+    confirmActionCallback = null;
 }

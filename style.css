@@ -16,6 +16,7 @@ body {
     color: var(--text-dark);
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
 }
 
 .form-input {
@@ -76,10 +77,6 @@ header {
     padding-top: max(16px, env(safe-area-inset-top));
 }
 
-body {
-    padding-bottom: calc(80px + env(safe-area-inset-bottom));
-}
-
 .file-upload-wrapper {
     display: flex;
     align-items: center;
@@ -96,6 +93,21 @@ body {
 .file-upload-wrapper:hover {
     background-color: #e2d7cd;
     border-color: #67412c;
+}
+
+/* Loading Spinner CSS */
+.img-spinner {
+    border: 3px solid rgba(140, 90, 60, 0.2);
+    border-top: 3px solid #67412c;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* DARK MODE STYLES */
@@ -139,14 +151,13 @@ body.dark-theme .dark-btn-sec {
     background-color: #3b2d26 !important;
     color: #d1b49e !important;
 }
-/* Notification Container එක පහළට කිරීමට */
+
 .notification-dropdown, 
 #notification-list {
-    margin-top: 12px; /* Button එකේ සිට පහළට ඇති පරතරය */
+    margin-top: 12px;
 }
 
-/* Notification දෙකක් අතර ඉඩ (Gap) තැබීමට */
 .notification-item {
-    margin-bottom: 10px; /* Notifications දෙකක් අතර පරතරය */
-    padding: 10px;       /* ඇතුළත ඉඩ කඩ සකස් කිරීමට */
+    margin-bottom: 10px;
+    padding: 10px;
 }

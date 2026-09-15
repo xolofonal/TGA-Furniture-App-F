@@ -122,7 +122,6 @@
                 <div class="flex justify-between items-center">
                     <h2 class="font-bold text-[#2c221e] text-sm dark-text-heading" id="lang-reports-title">Sales Reports</h2>
                     
-                    <!-- 3-Dot Action Menu -->
                     <div class="relative">
                         <button onclick="toggleReportMenu()" class="p-2 text-[#2c221e] dark-text-heading hover:bg-[#f4ede4] rounded-lg transition">
                             <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 6.75a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm0 6.75a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" /></svg>
@@ -140,7 +139,6 @@
                     </div>
                 </div>
 
-                <!-- Filters & Sorting Controls -->
                 <div class="grid grid-cols-2 gap-2 bg-[#f4ede4] dark-bg-box p-2 rounded-xl border border-[#e2d7cd] dark-border">
                     <div id="report-branch-select-container">
                         <label class="text-[10px] font-bold text-[#67412c] dark-text-sub block" id="lbl-branch-filter">Branch</label>
@@ -187,118 +185,110 @@
             <div id="notification-list" class="space-y-2"></div>
         </section>
 
-<!-- FULL PAGE SETTINGS SCREEN -->
-<section id="sec-settings" class="hidden fixed inset-0 bg-[#fcf9f5] z-50 flex flex-col dark-bg-page">
-    
-    <!-- FIXED HEADER (Scroll වෙන්නේ නැත) -->
-    <div class="flex items-center space-x-3 border-b border-[#e2d7cd] p-4 pt-8 sm:pt-4 dark-border bg-[#fcf9f5] dark-bg-page shrink-0">
-        <button onclick="closeFullSettingsPage()" class="p-2 bg-[#f4ede4] hover:bg-[#e2d7cd] rounded-xl text-[#67412c] dark-btn-sec">
-            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
-            </svg>
-        </button>
-        <h2 class="font-bold text-lg text-[#2c221e] dark-text-heading" id="lang-settings-heading">Settings</h2>
-    </div>
-
-    <!-- SCROLLABLE CONTENT (පහළට Scroll වන කොටස) -->
-    <div class="flex-1 overflow-y-auto p-4 space-y-4 max-w-lg mx-auto w-full">
-        <!-- Appearance Settings -->
-        <div class="bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-2 dark-bg-box dark-border">
-            <label class="text-xs font-bold text-[#67412c] dark-text-heading block" id="lang-setting-appearance">Appearance</label>
-            <div class="flex space-x-2">
-                <button onclick="setTheme('light')" id="theme-light-btn" class="w-1/2 py-2.5 rounded-xl font-bold text-xs border border-[#67412c] bg-[#67412c] text-white">Light Mode</button>
-                <button onclick="setTheme('dark')" id="theme-dark-btn" class="w-1/2 py-2.5 rounded-xl font-bold text-xs border border-[#e2d7cd] bg-slate-100 text-[#2c221e] dark-btn-sec">Dark Mode</button>
-            </div>
-        </div>
-
-        <!-- Language Settings -->
-        <div class="bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-2 dark-bg-box dark-border">
-            <label class="text-xs font-bold text-[#67412c] dark-text-heading block" id="lang-setting-language">Language / භාෂාව</label>
-            <select id="setting-language-select" onchange="changeAppLanguage(this.value)" class="form-input dark-input">
-                <option value="en">English (EN)</option>
-                <option value="si">සිංහල (SI)</option>
-            </select>
-        </div>
-
-        <!-- Manage Accounts Section (ADMIN ONLY) -->
-        <div id="admin-accounts-section" class="hidden bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-3 dark-bg-box dark-border">
-            <h3 class="font-bold text-sm text-[#2c221e] border-b border-[#e2d7cd] pb-1.5 dark-text-heading dark-border" id="lang-setting-accounts">Manage Accounts</h3>
-            <div>
-                <label class="text-xs font-bold text-[#67412c] dark-text-sub" id="lang-lbl-role">Select Role</label>
-                <select id="target-user-role" class="form-input mt-1 dark-input">
-                    <option value="admin">Admin</option>
-                    <option value="galenbindunuwewa">Manager - Galenbindunuwewa</option>
-                    <option value="mihinthale">Manager - Mihinthale</option>
-                </select>
-            </div>
-            <div>
-                <label class="text-xs font-bold text-[#67412c] dark-text-sub" id="lang-lbl-branch">Assign Branch</label>
-                <select id="target-user-branch" class="form-input mt-1 dark-input">
-                    <option value="galenbindunuwewa">Galenbindunuwewa Branch</option>
-                    <option value="mihinthale">Mihinthale Branch</option>
-                    <option value="all">All Branches (Full Access)</option>
-                </select>
-            </div>
-            <input type="text" id="target-username" placeholder="Username" class="form-input dark-input">
-            
-            <div class="relative">
-                <input type="password" id="new-password" placeholder="New Password" class="form-input pr-10 dark-input">
-                <button type="button" onclick="togglePasswordVisibility('new-password', 'new-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
-                    <svg id="new-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <!-- FULL PAGE SETTINGS SCREEN -->
+        <section id="sec-settings" class="hidden fixed inset-0 bg-[#fcf9f5] z-50 flex flex-col dark-bg-page">
+            <div class="flex items-center space-x-3 border-b border-[#e2d7cd] p-4 pt-8 sm:pt-4 dark-border bg-[#fcf9f5] dark-bg-page shrink-0">
+                <button onclick="closeFullSettingsPage()" class="p-2 bg-[#f4ede4] hover:bg-[#e2d7cd] rounded-xl text-[#67412c] dark-btn-sec">
+                    <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
                     </svg>
                 </button>
+                <h2 class="font-bold text-lg text-[#2c221e] dark-text-heading" id="lang-settings-heading">Settings</h2>
             </div>
 
-            <div class="relative">
-                <input type="password" id="confirm-password" placeholder="Confirm New Password" class="form-input pr-10 dark-input">
-                <button type="button" onclick="togglePasswordVisibility('confirm-password', 'confirm-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
-                    <svg id="confirm-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 max-w-lg mx-auto w-full">
+                <div class="bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-2 dark-bg-box dark-border">
+                    <label class="text-xs font-bold text-[#67412c] dark-text-heading block" id="lang-setting-appearance">Appearance</label>
+                    <div class="flex space-x-2">
+                        <button onclick="setTheme('light')" id="theme-light-btn" class="w-1/2 py-2.5 rounded-xl font-bold text-xs border border-[#67412c] bg-[#67412c] text-white">Light Mode</button>
+                        <button onclick="setTheme('dark')" id="theme-dark-btn" class="w-1/2 py-2.5 rounded-xl font-bold text-xs border border-[#e2d7cd] bg-slate-100 text-[#2c221e] dark-btn-sec">Dark Mode</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-2 dark-bg-box dark-border">
+                    <label class="text-xs font-bold text-[#67412c] dark-text-heading block" id="lang-setting-language">Language / භාෂාව</label>
+                    <select id="setting-language-select" onchange="changeAppLanguage(this.value)" class="form-input dark-input">
+                        <option value="en">English (EN)</option>
+                        <option value="si">සිංහල (SI)</option>
+                    </select>
+                </div>
+
+                <div id="admin-accounts-section" class="hidden bg-white p-4 rounded-2xl border border-[#e2d7cd] space-y-3 dark-bg-box dark-border">
+                    <h3 class="font-bold text-sm text-[#2c221e] border-b border-[#e2d7cd] pb-1.5 dark-text-heading dark-border" id="lang-setting-accounts">Manage Accounts</h3>
+                    <div>
+                        <label class="text-xs font-bold text-[#67412c] dark-text-sub" id="lang-lbl-role">Select Role</label>
+                        <select id="target-user-role" class="form-input mt-1 dark-input">
+                            <option value="admin">Admin</option>
+                            <option value="galenbindunuwewa">Manager - Galenbindunuwewa</option>
+                            <option value="mihinthale">Manager - Mihinthale</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#67412c] dark-text-sub" id="lang-lbl-branch">Assign Branch</label>
+                        <select id="target-user-branch" class="form-input mt-1 dark-input">
+                            <option value="galenbindunuwewa">Galenbindunuwewa Branch</option>
+                            <option value="mihinthale">Mihinthale Branch</option>
+                            <option value="all">All Branches (Full Access)</option>
+                        </select>
+                    </div>
+                    <input type="text" id="target-username" placeholder="Username" class="form-input dark-input">
+                    
+                    <div class="relative">
+                        <input type="password" id="new-password" placeholder="New Password" class="form-input pr-10 dark-input">
+                        <button type="button" onclick="togglePasswordVisibility('new-password', 'new-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                            <svg id="new-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="relative">
+                        <input type="password" id="confirm-password" placeholder="Confirm New Password" class="form-input pr-10 dark-input">
+                        <button type="button" onclick="togglePasswordVisibility('confirm-password', 'confirm-pass-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                            <svg id="confirm-pass-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="relative">
+                        <input type="password" id="new-pin" maxlength="6" placeholder="New 6-Digit PIN" class="form-input pr-10 dark-input">
+                        <button type="button" onclick="togglePasswordVisibility('new-pin', 'new-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                            <svg id="new-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="relative">
+                        <input type="password" id="confirm-pin" maxlength="6" placeholder="Confirm New 6-Digit PIN" class="form-input pr-10 dark-input">
+                        <button type="button" onclick="togglePasswordVisibility('confirm-pin', 'confirm-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
+                            <svg id="confirm-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <button onclick="submitCredentialChange()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs" id="lang-btn-saveuser">Save User</button>
+                </div>
+
+                <div id="admin-cleanup-container" class="hidden bg-[#fbebe8] border border-[#f0b1a8] p-3 rounded-2xl dark-bg-box">
+                    <button onclick="openCleanupModal()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center space-x-2" id="lang-btn-cleanup">
+                        <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                        <span>System Cleanup Options</span>
+                    </button>
+                </div>
+
+                <button onclick="handleLogout()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-3 rounded-2xl font-bold text-xs shadow-md flex items-center justify-center space-x-2">
+                    <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+                    <span id="lang-btn-logout">Log Out</span>
                 </button>
             </div>
-
-            <div class="relative">
-                <input type="password" id="new-pin" maxlength="6" placeholder="New 6-Digit PIN" class="form-input pr-10 dark-input">
-                <button type="button" onclick="togglePasswordVisibility('new-pin', 'new-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
-                    <svg id="new-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="relative">
-                <input type="password" id="confirm-pin" maxlength="6" placeholder="Confirm New 6-Digit PIN" class="form-input pr-10 dark-input">
-                <button type="button" onclick="togglePasswordVisibility('confirm-pin', 'confirm-pin-eye-icon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#67412c]">
-                    <svg id="confirm-pin-eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                </button>
-            </div>
-
-            <button onclick="submitCredentialChange()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs" id="lang-btn-saveuser">Save User</button>
-        </div>
-
-        <!-- System Cleanup Button (ADMIN ONLY) -->
-        <div id="admin-cleanup-container" class="hidden bg-[#fbebe8] border border-[#f0b1a8] p-3 rounded-2xl dark-bg-box">
-            <button onclick="openCleanupModal()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center space-x-2" id="lang-btn-cleanup">
-                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
-                <span>System Cleanup Options</span>
-            </button>
-        </div>
-
-        <!-- Logout Button (EVERYONE) -->
-        <button onclick="handleLogout()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-3 rounded-2xl font-bold text-xs shadow-md flex items-center justify-center space-x-2">
-            <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
-            <span id="lang-btn-logout">Log Out</span>
-        </button>
-    </div>
-</section>
+        </section>
     </main>
 
     <!-- Bottom Navigation Bar -->
@@ -362,7 +352,7 @@
 
     <!-- Add Item Modal -->
     <div id="modal-add-item" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd] max-h-[75vh] overflow-y-auto dark-bg-box dark-border">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd] max-h-[80vh] overflow-y-auto dark-bg-box dark-border">
             <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e] dark-text-heading">Add New Item</h3>
             <input type="text" id="add-name" placeholder="Item Name" class="form-input dark-input">
             
@@ -394,76 +384,52 @@
             </div>
 
             <div class="space-y-1">
-                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Calculated Selling Price (Rs.)</label>
-                <input type="number" id="add-selling-price" readonly placeholder="Auto Calculated" class="form-input bg-slate-100 font-bold text-[#67412c] dark-input">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Selling Price (Rs.)</label>
+                <input type="number" id="add-selling-price" placeholder="0.00" class="form-input dark-input">
             </div>
 
-            <input type="text" id="add-size" placeholder="Size (e.g. 6x4 ft)" class="form-input dark-input">
-            <input type="number" id="add-qty" placeholder="Quantity" class="form-input dark-input">
-            
             <div class="space-y-1">
-                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Item Image</label>
-                <label for="add-photo" class="file-upload-wrapper dark-bg-box dark-border">
-                    <svg class="w-5 h-5 stroke-[#67412c] dark-text" fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
-                    <span class="text-xs font-semibold text-[#67412c] dark-text">Choose Photo</span>
-                    <input type="file" id="add-photo" accept="image/*" class="hidden">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Size / Dimension</label>
+                <input type="text" id="add-size" placeholder="e.g. 6x3 ft" class="form-input dark-input">
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Quantity</label>
+                <input type="number" id="add-qty" placeholder="1" class="form-input dark-input">
+            </div>
+
+            <!-- Upload Field with Loading & Close (X) Preview Controls -->
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Photo</label>
+                <label class="file-upload-wrapper dark-bg-page dark-border">
+                    <svg class="w-5 h-5 text-[#8c5a3c]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span id="add-photo-text" class="text-xs font-bold text-[#67412c] dark-text">Choose Photo</span>
+                    <input type="file" id="add-photo" accept="image/*" class="hidden" onchange="handleFilePreview(this, 'add-preview-container', 'add-preview-img', 'add-loader', 'add-photo-text')">
                 </label>
+
+                <!-- Preview Area with X close & Loading -->
+                <div id="add-preview-container" class="hidden relative mt-2 rounded-xl overflow-hidden border border-[#e2d7cd] bg-slate-50 flex items-center justify-center min-h-[120px]">
+                    <div id="add-loader" class="hidden flex flex-col items-center py-4">
+                        <div class="img-spinner mb-1"></div>
+                        <span class="text-[10px] font-semibold text-slate-500">Loading Image...</span>
+                    </div>
+                    <img id="add-preview-img" class="w-full h-32 object-cover hidden">
+                    <button type="button" onclick="removeImagePreview('add-photo', 'add-preview-container', 'add-preview-img', 'add-photo-text')" class="absolute top-1.5 right-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 shadow">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="flex space-x-2 pt-2">
-                <button onclick="submitAddItem()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Save Item</button>
-                <button onclick="closeModal('modal-add-item')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs dark-btn-sec">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sell Modal -->
-    <div id="modal-sell" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd] max-h-[75vh] overflow-y-auto dark-bg-box dark-border">
-            <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e] dark-text-heading">Sell Item</h3>
-            
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Selling Price per Unit (Rs.)</label>
-                <input type="number" id="sell-selling-price" readonly class="form-input bg-slate-100 font-bold text-[#67412c] dark-input">
-            </div>
-
-            <input type="text" id="sell-cust-name" placeholder="Customer Name" class="form-input dark-input">
-            <input type="text" id="sell-cust-area" placeholder="Area / Address" class="form-input dark-input">
-            <input type="tel" id="sell-cust-tel" placeholder="Telephone Number" class="form-input dark-input">
-            <input type="number" id="sell-qty" value="1" min="1" oninput="calculateProfit()" placeholder="Quantity" class="form-input dark-input">
-            <input type="date" id="sell-date" class="form-input dark-input">
-            
-            <label class="text-xs font-bold text-[#67412c] dark-text-sub block">Payment Type</label>
-            <select id="sell-payment-type" onchange="toggleInstallmentOptions()" class="form-input dark-input">
-                <option value="cash">Cash Payment</option>
-                <option value="installment">Monthly Installments</option>
-            </select>
-
-            <div id="installment-months-box" class="hidden space-y-2">
-                <label class="text-xs font-bold text-[#67412c] dark-text-sub block">Select Installment Months</label>
-                <select id="sell-months-select" onchange="handleMonthsSelectChange()" class="form-input dark-input">
-                    <option value="3">3 Months</option>
-                    <option value="6">6 Months</option>
-                    <option value="custom">Custom (1-12 Months)</option>
-                </select>
-                <input type="number" id="sell-custom-months" min="1" max="12" placeholder="Enter Months (1 - 12)" class="form-input hidden dark-input">
-            </div>
-
-            <div class="space-y-1">
-                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Profit for this sale (Rs.)</label>
-                <input type="number" id="sell-profit" placeholder="Calculated Profit" class="form-input dark-input">
-            </div>
-
-            <div class="flex space-x-2 pt-2">
-                <button onclick="submitSell()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Confirm Sale</button>
-                <button onclick="closeModal('modal-sell')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs dark-btn-sec">Cancel</button>
+            <div class="pt-2 flex space-x-2">
+                <button onclick="submitAddItem()" class="w-1/2 bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Save Item</button>
+                <button onclick="closeModal('modal-add-item')" class="w-1/2 bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs dark-btn-sec">Cancel</button>
             </div>
         </div>
     </div>
 
     <!-- Edit Item Modal -->
     <div id="modal-edit-item" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd] max-h-[75vh] overflow-y-auto dark-bg-box dark-border">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd] max-h-[80vh] overflow-y-auto dark-bg-box dark-border">
             <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e] dark-text-heading">Edit Item</h3>
             <input type="text" id="edit-name" placeholder="Item Name" class="form-input dark-input">
             
@@ -478,65 +444,164 @@
 
             <div class="space-y-1">
                 <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Material Cost (Rs.)</label>
-                <input type="number" id="edit-material-cost" oninput="calculateSellingPrice('edit')" placeholder="0.00" class="form-input dark-input">
+                <input type="number" id="edit-material-cost" oninput="calculateSellingPrice('edit')" class="form-input dark-input">
             </div>
 
             <div class="space-y-1">
-                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Profit (Rs.)</label>
-                <input type="number" id="edit-profit" oninput="calculateSellingPrice('edit')" placeholder="0.00" class="form-input dark-input">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Expected Profit (Rs.)</label>
+                <input type="number" id="edit-profit" oninput="calculateSellingPrice('edit')" class="form-input dark-input">
             </div>
 
             <div class="space-y-1">
                 <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Selling Price (Rs.)</label>
-                <input type="number" id="edit-selling-price" readonly placeholder="Calculated Price" class="form-input bg-slate-100 font-bold text-[#67412c] dark-input">
+                <input type="number" id="edit-selling-price" class="form-input dark-input">
             </div>
 
-            <input type="text" id="edit-size" placeholder="Size" class="form-input dark-input">
-            <input type="number" id="edit-qty" placeholder="Quantity" class="form-input dark-input">
-            
             <div class="space-y-1">
-                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Update Image</label>
-                <label for="edit-photo" class="file-upload-wrapper dark-bg-box dark-border">
-                    <svg class="w-5 h-5 stroke-[#67412c] dark-text" fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
-                    <span class="text-xs font-semibold text-[#67412c] dark-text">Choose Photo</span>
-                    <input type="file" id="edit-photo" accept="image/*" class="hidden">
-                </label>
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Size / Dimension</label>
+                <input type="text" id="edit-size" class="form-input dark-input">
             </div>
 
-            <div class="flex space-x-2 pt-2">
-                <button onclick="submitEditItem()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Update Item</button>
-                <button onclick="closeModal('modal-edit-item')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs dark-btn-sec">Cancel</button>
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Quantity</label>
+                <input type="number" id="edit-qty" class="form-input dark-input">
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Photo (Optional)</label>
+                <label class="file-upload-wrapper dark-bg-page dark-border">
+                    <svg class="w-5 h-5 text-[#8c5a3c]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span id="edit-photo-text" class="text-xs font-bold text-[#67412c] dark-text">Update Photo</span>
+                    <input type="file" id="edit-photo" accept="image/*" class="hidden" onchange="handleFilePreview(this, 'edit-preview-container', 'edit-preview-img', 'edit-loader', 'edit-photo-text')">
+                </label>
+
+                <div id="edit-preview-container" class="hidden relative mt-2 rounded-xl overflow-hidden border border-[#e2d7cd] bg-slate-50 flex items-center justify-center min-h-[120px]">
+                    <div id="edit-loader" class="hidden flex flex-col items-center py-4">
+                        <div class="img-spinner mb-1"></div>
+                        <span class="text-[10px] font-semibold text-slate-500">Loading Image...</span>
+                    </div>
+                    <img id="edit-preview-img" class="w-full h-32 object-cover hidden">
+                    <button type="button" onclick="removeImagePreview('edit-photo', 'edit-preview-container', 'edit-preview-img', 'edit-photo-text')" class="absolute top-1.5 right-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 shadow">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="pt-2 flex space-x-2">
+                <button onclick="submitEditItem()" class="w-1/2 bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Update Item</button>
+                <button onclick="closeModal('modal-edit-item')" class="w-1/2 bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs dark-btn-sec">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- Item Options Modal -->
+    <!-- Item Options Popover Modal -->
     <div id="modal-item-options" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 shadow-xl border border-[#e2d7cd] dark-bg-box dark-border">
-            <h3 id="pop-item-name" class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e] dark-text-heading">Item Options</h3>
-            <p class="text-xs text-slate-500 dark-text-sub">Available stock: <span id="pop-item-qty" class="font-bold text-[#8c5a3c]"></span></p>
+        <div class="bg-white w-full max-w-xs rounded-2xl p-5 space-y-3 border border-[#e2d7cd] dark-bg-box dark-border text-center">
+            <h3 id="pop-item-name" class="font-bold text-sm text-[#2c221e] dark-text-heading border-b pb-2 dark-border">Item Name</h3>
+            <p class="text-xs text-slate-500 dark-text-sub">Available Quantity: <span id="pop-item-qty" class="font-bold text-[#67412c] dark-text">0</span></p>
+            
             <div class="space-y-2 pt-2">
-                <button onclick="openSellModal()" class="w-full bg-[#67412c] hover:bg-[#4a2e1e] text-white py-3 rounded-xl font-bold text-xs">Sell This Item</button>
-                <button id="btn-opt-edit" onclick="openEditModal()" class="w-full bg-[#8c5a3c] hover:bg-[#67412c] text-white py-3 rounded-xl font-bold text-xs">Edit Item</button>
-                <button id="btn-opt-delete" onclick="deleteSelectedItem()" class="w-full bg-[#a83232] hover:bg-[#852525] text-white py-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-1">
-                    <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
-                    <span>Delete Item</span>
-                </button>
-                <button onclick="closeModal('modal-item-options')" class="w-full bg-[#f4ede4] text-[#67412c] py-3 rounded-xl font-bold text-xs dark-btn-sec">Cancel</button>
+                <button onclick="openSellModal()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Sell This Item</button>
+                <button id="btn-opt-edit" onclick="openEditModal()" class="w-full bg-[#8c5a3c] text-white py-2.5 rounded-xl font-bold text-xs">Edit Item</button>
+                <button id="btn-opt-delete" onclick="deleteSelectedItem()" class="w-full bg-rose-700 text-white py-2.5 rounded-xl font-bold text-xs">Delete Item</button>
+            </div>
+
+            <button onclick="closeModal('modal-item-options')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs mt-2 dark-btn-sec">Close</button>
+        </div>
+    </div>
+
+    <!-- Sell Modal -->
+    <div id="modal-sell" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 border border-[#e2d7cd] max-h-[80vh] overflow-y-auto dark-bg-box dark-border">
+            <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e] dark-text-heading">Record Sale</h3>
+            
+            <input type="text" id="sell-cust-name" placeholder="Customer Name" class="form-input dark-input">
+            <input type="text" id="sell-cust-area" placeholder="Customer Area/City" class="form-input dark-input">
+            <input type="tel" id="sell-cust-tel" placeholder="Customer Telephone Number" class="form-input dark-input">
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Quantity</label>
+                <input type="number" id="sell-qty" value="1" min="1" oninput="calculateProfit()" class="form-input dark-input">
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Sale Date</label>
+                <input type="date" id="sell-date" class="form-input dark-input">
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Payment Type</label>
+                <select id="sell-payment-type" onchange="toggleInstallmentOptions()" class="form-input dark-input">
+                    <option value="cash">Cash Payment</option>
+                    <option value="installment">Installment Payment</option>
+                </select>
+            </div>
+
+            <div id="installment-months-box" class="hidden space-y-2">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Number of Installment Months</label>
+                <select id="sell-months-select" onchange="handleMonthsSelectChange()" class="form-input dark-input">
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="12">12 Months</option>
+                    <option value="custom">Custom Months</option>
+                </select>
+                <input type="number" id="sell-custom-months" placeholder="Enter custom months" class="form-input dark-input hidden">
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-[#67412c] dark-text-sub">Total Profit (Rs.)</label>
+                <input type="number" id="sell-profit" placeholder="0.00" class="form-input dark-input" readonly>
+            </div>
+
+            <div class="pt-2 flex space-x-2">
+                <button onclick="submitSell()" class="w-1/2 bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Confirm Sale</button>
+                <button onclick="closeModal('modal-sell')" class="w-1/2 bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs dark-btn-sec">Cancel</button>
             </div>
         </div>
     </div>
 
     <!-- Pay Installment Modal -->
     <div id="modal-pay-installment" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-xs rounded-2xl p-5 space-y-3 text-center border border-[#e2d7cd] dark-bg-box dark-border">
-            <h3 class="font-bold text-base border-b border-[#e2d7cd] pb-2 text-[#2c221e] dark-text-heading">Record Installment</h3>
-            <p id="pay-modal-desc" class="text-xs text-slate-600 dark-text-sub"></p>
-            <button onclick="confirmInstallmentPayment()" class="w-full bg-[#67412c] text-white py-2.5 rounded-xl font-bold text-xs">Mark as PAID</button>
-            <button onclick="closeModal('modal-pay-installment')" class="w-full bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs dark-btn-sec">Close</button>
+        <div class="bg-white w-full max-w-xs rounded-2xl p-5 space-y-3 border border-[#e2d7cd] dark-bg-box dark-border text-center">
+            <h3 class="font-bold text-base text-[#2c221e] dark-text-heading">Record Payment</h3>
+            <p id="pay-modal-desc" class="text-xs text-slate-500 dark-text-sub"></p>
+            <div class="pt-2 flex space-x-2">
+                <button onclick="confirmInstallmentPayment()" class="w-1/2 bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs">Yes, Paid</button>
+                <button onclick="closeModal('modal-pay-installment')" class="w-1/2 bg-[#f4ede4] text-[#67412c] py-2.5 rounded-xl font-bold text-xs dark-btn-sec">Cancel</button>
+            </div>
         </div>
     </div>
-
+    <!-- Custom Custom Alert Modal -->
+<div id="modal-custom-alert" class="hidden fixed inset-0 bg-[#2c221e]/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark-bg-box dark-border w-full max-w-sm rounded-2xl p-5 space-y-4 border border-[#e2d7cd] text-center shadow-xl transform transition-all scale-100">
+        <div id="custom-alert-icon" class="mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-[#f4ede4] text-[#67412c] dark-btn-sec">
+            <!-- Icon JS හරහා dynamically වැටේ -->
+        </div>
+        <div>
+            <h3 id="custom-alert-title" class="font-bold text-base text-[#2c221e] dark-text-heading">Notification</h3>
+            <p id="custom-alert-msg" class="text-xs text-slate-600 dark-text-sub mt-1">Message content goes here...</p>
+        </div>
+        <button onclick="closeCustomAlert()" class="w-full bg-[#67412c] hover:bg-[#4a2e1e] text-white py-2.5 rounded-xl font-bold text-xs transition">
+            OK
+        </button>
+    </div>
+</div>
+<!-- Custom Confirmation Modal -->
+<div id="modal-confirm-dialog" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white dark-bg-box p-5 rounded-2xl max-w-sm w-full space-y-4 text-center shadow-xl border border-slate-200 dark-border">
+        <div class="mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 text-amber-600">
+            <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+            </svg>
+        </div>
+        <h3 id="confirm-dialog-title" class="text-base font-bold text-slate-800 dark-text-heading">Confirmation</h3>
+        <p id="confirm-dialog-msg" class="text-xs text-slate-600 dark-text-sub"></p>
+        <div class="flex space-x-2 pt-2">
+            <button id="btn-confirm-cancel" onclick="closeConfirmModal()" class="w-1/2 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 dark-btn-sec">Cancel</button>
+            <button id="btn-confirm-yes" class="w-1/2 py-2.5 rounded-xl font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white transition">Yes, Proceed</button>
+        </div>
+    </div>
+</div>
     <script src="app.js"></script>
 </body>
 </html>
